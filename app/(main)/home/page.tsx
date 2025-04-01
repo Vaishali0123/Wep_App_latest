@@ -22,7 +22,7 @@ const Page = () => {
   // }, [userId]);
 
   return (
-    <div className="bg-white w-full overflow-auto h-screen flex items-center justify-center">
+    <div className="bg-white w-full pn:max-sm:hiddenx overflow-auto h-screen flex items-center justify-center">
       <Image
         alt="compic"
         src={Insidecompic}

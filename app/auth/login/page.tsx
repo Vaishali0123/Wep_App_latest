@@ -57,21 +57,12 @@ const Page = () => {
       setShowOtp(true);
       toast.success("Otp Sent Successfully!");
     } catch (error) {
-      console.log(error);
-      // errorHandler(error as AxiosError | Error);
+      errorHandler(error);
     } finally {
       setLoading(false);
     }
   };
 
-  /*************  ✨ Codeium Command ⭐  *************/
-  /**
-   * Sets the cookie with the given token and user data.
-   * @param {UserData} data The user data to store in the cookie.
-   * @param {string} token The access token to store in the cookie.
-   * @returns {void} Nothing.
-   */
-  /******  c6b76574-69fd-4668-a059-657313707c41  *******/
   const cookieSetter = (data: UserData, token: string) => {
     try {
       const expirationDate = new Date();
@@ -79,7 +70,6 @@ const Page = () => {
       Cookies.set("token", token, { expires: expirationDate });
       setData(data);
       setAuth(true);
-      toast.success("Login successful!");
       router.push("../home");
     } catch (error) {
       console.log(error);
@@ -105,8 +95,8 @@ const Page = () => {
         router.push("/auth/signup");
       }
     } catch (error) {
-      errorHandler(error as AxiosError | Error);
-    } finally {
+      errorHandler(error);
+      router.push("/auth/signup");
       setLoading(false);
     }
   };
@@ -133,9 +123,7 @@ const Page = () => {
         toast.error("OTP Verification Failed");
       }
     } catch (error) {
-      errorHandler(error as AxiosError | Error);
-      console.log(error);
-    } finally {
+      errorHandler(error);
       setLoading(false);
     }
   };
@@ -169,42 +157,19 @@ const Page = () => {
 
   const loginWithEmail = async () => {
     try {
+      setLoading(true);
       const response = await axios.post(`${API}/loginWithEmail`, {
         email: email,
       });
       if (response.data.success) {
-        const reactNativeWebView = (
-          window as {
-            ReactNativeWebView?: { postMessage: (message: string) => void };
-          }
-        ).ReactNativeWebView;
-
-        if (reactNativeWebView) {
-          const a = JSON.stringify(response?.data);
-          reactNativeWebView.postMessage(a);
-        }
-        toast.success("Login Successful");
+        cookieSetter(response.data.data, response.data.access_token);
       } else {
-        const reactNativeWebView = (
-          window as {
-            ReactNativeWebView?: { postMessage: (message: string) => void };
-          }
-        ).ReactNativeWebView;
-
-        if (reactNativeWebView) {
-          const data = {
-            email: email,
-            userexists: false,
-            success: true,
-          };
-          const aa = JSON.stringify(data);
-          reactNativeWebView.postMessage(aa);
-        }
-        toast.error("Seems like you don't have an account in the app.");
+        toast.error("Seems like you don't have an account.");
         router.push("/auth/signup");
       }
     } catch (error) {
-      errorHandler(error as AxiosError | Error);
+      errorHandler(error);
+      setLoading(false);
     }
   };
 
@@ -230,8 +195,7 @@ const Page = () => {
         toast.error("OTP Verification Failed");
       }
     } catch (error) {
-      errorHandler(error as AxiosError | Error);
-    } finally {
+      errorHandler(error);
       setLoading(false);
     }
   };
@@ -248,54 +212,58 @@ const Page = () => {
           />
         </div>
         <div className="text-[40px] font-extrabold text-[#2c2c2c]">Login</div>
-        <div className="flex w-full">
-          <span className=" text-[16px] font-medium text-[#9095A0] bg-transparent ">
-            Don&apos;t have an account?
-            <span className="text-blue-500">
-              <Link className="cursor-pointer" href="../auth/signup">
-                {" "}
-                Sign up here
-              </Link>{" "}
+        {!showOtp && (
+          <div className="flex w-full">
+            <span className=" text-[16px] font-medium text-[#9095A0] bg-transparent ">
+              Don&apos;t have an account?
+              <span className="text-blue-500">
+                <Link className="cursor-pointer" href="../auth/signup">
+                  {" "}
+                  Sign up here
+                </Link>{" "}
+              </span>
             </span>
-          </span>
-        </div>
+          </div>
+        )}
 
         {/* Switcher */}
-        <div className="grid grid-cols-1  border-2 border-slate-50 relative rounded-xl bg-slate-50 pn:max-sm:-mt-6 w-fit">
-          <div className="flex rounded-xl text-[#303030] select-none text-[14px]">
-            <div
-              onClick={() => {
-                if (showOtp === true) {
-                  return;
-                }
-                setChange(1);
-              }}
-              className={`  rounded-xl flex justify-center items-center h-[35px] w-[150px] z-10 ${
-                change === 1 ? "font-bold " : "cursor-pointer"
-              }`}
-            >
-              Phone no.
-            </div>
-            <div
-              className={`absolute duration-100 h-[35px] w-[50%] rounded-xl bg-slate-100 ${
-                change === 1 ? "left-[0px] " : " left-[50%]"
-              }`}
-            ></div>
-            <div
-              onClick={() => {
-                if (showOtp === true) {
-                  return;
-                }
-                setChange(2);
-              }}
-              className={` rounded-xl flex justify-center items-center h-[35px] w-[150px] z-10 ${
-                change === 2 ? "font-bold " : "cursor-pointer"
-              }`}
-            >
-              Email
+        {!showOtp && (
+          <div className="grid grid-cols-1  border-2 border-slate-50 relative rounded-xl bg-slate-50 pn:max-sm:-mt-6 w-fit">
+            <div className="flex rounded-xl text-[#303030] select-none text-[14px]">
+              <div
+                onClick={() => {
+                  if (showOtp) {
+                    return;
+                  }
+                  setChange(1);
+                }}
+                className={`  rounded-xl flex justify-center items-center h-[35px] w-[150px] z-10 ${
+                  change === 1 ? "font-bold " : "cursor-pointer"
+                }`}
+              >
+                Phone no.
+              </div>
+              <div
+                className={`absolute duration-100 h-[35px] w-[50%] rounded-xl bg-slate-100 ${
+                  change === 1 ? "left-[0px] " : " left-[50%]"
+                }`}
+              ></div>
+              <div
+                onClick={() => {
+                  if (showOtp) {
+                    return;
+                  }
+                  setChange(2);
+                }}
+                className={` rounded-xl flex justify-center items-center h-[35px] w-[150px] z-10 ${
+                  change === 2 ? "font-bold " : "cursor-pointer"
+                }`}
+              >
+                Email
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
         {/* phone */}
         <div
@@ -317,7 +285,7 @@ const Page = () => {
           ) : (
             <MobileInput
               sendPhoneOtp={sendPhoneOtp}
-              // sendPhoneOtp={loginWithPhoneNumber}
+              // sendPhoneOtp={loginWithPhoneNumber}/
               number={phoneNumber}
               loading={loading}
               setPhoneNumber={setPhoneNumber}

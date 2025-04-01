@@ -25,14 +25,14 @@ export default function MainLayout({
     (state: RootState) => state.comFeed.chatheader
   );
   const { data } = useAuthContext();
-  console.log(data);
+
   return (
     <>
       <div className=" fixed h-screen w-screen pn:max-sm:flex-col flex flex-row-reverse">
         {/* header  */}
         <div
           className={`${
-            chatheader === true
+            chatheader === true || path === "/home/insideCommunity"
               ? "hidden"
               : "h-full w-[50px] bg-white border  sm:hidden border-dashed flex justify-between items-center px-2 pn:max-sm:w-full pn:max-sm:h-[50px] p-[2px]"
           }`}
@@ -40,7 +40,7 @@ export default function MainLayout({
           <img
             loading="lazy"
             src={data?.dp}
-            className="w-[40px] object-cover h-[40px] rounded-2xl bg-slate-500"
+            className="w-[40px] object-cover h-[40px] rounded-2xl "
           />
           <Link
             href={"../search"}
@@ -60,7 +60,9 @@ export default function MainLayout({
         {/* navbar  */}
         <div
           className={`${
-            chatheader === true ? "pn:max-sm:hidden" : "flex pn:max-sm:h-[50px]"
+            chatheader === true || path.startsWith("/home/insideCommunity")
+              ? "pn:max-md:hidden"
+              : "flex pn:max-sm:h-[50px]"
           }`}
         >
           <div className="h-full pn:max-sm:flex-row w-[60px] z-10 bg-white border-r cursor-pointer border-dashed flex flex-col items-center pn:max-sm:w-full pn:max-sm:h-[50px] py-1">

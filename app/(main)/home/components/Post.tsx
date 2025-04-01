@@ -147,11 +147,12 @@ const Post = ({
     }
   }, [userId]);
 
-  const trackView = (postId: string) => {
-    if (socketRef.current) {
-      socketRef.current.emit("trackView", { postId, userId });
-    }
-  };
+  // const trackView = (postId: string) => {
+  //   if (!socketRef.current || viewedPosts.current.has(postId)) return;
+  //   if (socketRef.current) {
+  //     socketRef.current.emit("trackView", { postId, userId });
+  //   }
+  // };
 
   // Track clicks (when a post is clicked)
   const trackClick = (postId: string) => {
@@ -197,39 +198,47 @@ const Post = ({
     }
     setLoad(false);
   };
+  // const trackViewAPI = async (postId: string) => {
+  //   try {
+  //     const res = axios.post("http://localhost:7002/api/sendanalytics", {
+  //       postId: "65e88e9e182f1707a699aa31",
+  //     });
+  //     console.log(`✅ View tracked for post: ${postId}`);
+  //   } catch (e) {
+  //     console.error("❌ Error tracking view:", e);
+  //   }
+  // };
+
   const postRefs = useRef<(HTMLDivElement | null)[]>([]);
   //For not unique views
 
   // Set up the IntersectionObserver inside useEffect for each post
-  useEffect(() => {
-    postData.forEach((d, index) => {
-      if (postRefs.current[index]) {
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              if (entry.isIntersecting) {
-                setTimeout(() => {
-                  if (d?.type === "ad") {
-                    console.log(
-                      d?.ads?.postDetails?._id,
-                      "d?.ads?.postDetails?._id"
-                    );
-                    trackView(d?.ads?.postDetails?._id as string);
-                  } else {
-                    console.log(d?.posts?._id, "d?.adsid");
-                    trackView(d?.posts?._id as string);
-                  } // Track after 2 seconds
-                }, 1000);
-              }
-            });
-          },
-          { threshold: 0.8 }
-        );
+  // useEffect(() => {
+  //   postData.forEach((d, index) => {
+  //     if (postRefs.current[index]) {
+  //       const observer = new IntersectionObserver(
+  //         (entries) => {
+  //           entries.forEach((entry) => {
+  //             if (entry.isIntersecting) {
+  //               setTimeout(() => {
+  //                 if (d?.type === "ad") {
 
-        observer.observe(postRefs.current[index]);
-      }
-    });
-  }, [postData]);
+  //                   trackView(d?.ads?.postDetails?._id as string);
+  //                 } else {
+
+  //                   trackView(d?.posts?._id as string);
+  //                 } // Track after 2 seconds
+  //               }, 1000);
+  //             }
+  //           });
+  //         },
+  //         { threshold: 0.8 }
+  //       );
+
+  //       observer.observe(postRefs.current[index]);
+  //     }
+  //   });
+  // }, [postData]);
   const viewedPosts = useRef<Set<string>>(new Set()); // Store viewed post IDs
 
   useEffect(() => {
@@ -237,8 +246,13 @@ const Post = ({
     const timeouts: NodeJS.Timeout[] = []; // Store timeouts to clear them later
 
     postData.forEach((d, index) => {
+      let postId: string;
       if (postRefs.current[index]) {
-        const postId = d?.posts?._id as string;
+        if (d?.type === "ad") {
+          postId = d?.ads?.postDetails?._id as string;
+        } else {
+          postId = d?.posts?._id as string;
+        }
 
         if (viewedPosts.current.has(postId)) return; // ✅ Skip if already viewed
 
@@ -250,7 +264,7 @@ const Post = ({
                 const timeout = setTimeout(() => {
                   if (!viewedPosts.current.has(postId)) {
                     viewedPosts.current.add(postId);
-                    trackView(postId);
+                    // trackViewAPI(postId);
                   }
                 }, 1000);
 
@@ -273,7 +287,6 @@ const Post = ({
     };
   }, [postData]);
 
-  console.log(postData, "com");
   return (
     <>
       {/* load more .... */}
@@ -614,7 +627,7 @@ active:bg-slate-50 bg-slate-50 `}
                     ? `../home/insideCommunity?comId=${d?.posts?.community?._id}&userId=${userId}&isJoined=${d?.subs}`
                     : `../home/insideCommunity?comId=${d?.id}&userId=${userId}&isJoined=${d?.subs}`
                 }
-                className="w-full flex gap-2 items-center rounded-2xl"
+                className="w-full flex gap-2 cursor-pointer items-center rounded-2xl"
               >
                 <img
                   className="w-[40px] h-[40px] border rounded-[18px] "
@@ -693,16 +706,16 @@ active:bg-slate-50 bg-slate-50 `}
                     </>
                   ) : (
                     <>
-                      <div className="relative w-full h-full flex justify-center items-center">
+                      <div className=" w-full h-full flex justify-center items-center">
                         {/* Blurred background image */}
-                        <div
+                        {/* <div
                           className="absolute inset-0 bg-center bg-cover blur-lg opacity-50 p-2 brightness-105"
-                          // style={{
-                          //   backgroundImage: `url(${d?.urls?.[0]?.content})`,
-                          // }}
-                        />
+                          style={{
+                            backgroundImage: `url(${d?.urls?.[0]?.content})`,
+                          }}
+                        /> */}
                         {/* Main sharp image */}
-                        <div className="rounded-t-xl flex justify-center  overflow-hidden items-center w-full h-full z-50">
+                        <div className="rounded-t-xl flex justify-center  overflow-hidden items-center w-full h-full ">
                           <img
                             className="h-full bg-contain "
                             src={d?.urls?.[0]?.content}

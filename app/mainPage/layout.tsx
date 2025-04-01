@@ -7,7 +7,7 @@ function layout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="w-screen h-screen overflow-auto fixed bg-[#0d0d0d] ">
+    <div className="bg-[#0d0d0d] h-screen">
       <Header2 />
       {children}
       <Footer />

@@ -1,8 +1,10 @@
 "use client";
+import { useAuthContext } from "@/app/auth/components/auth";
 import { API } from "@/app/utils/helpers";
 import axios from "axios";
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
+import { RiLoaderLine } from "react-icons/ri";
 
 interface Community {
   dps: string; // URL of the image
@@ -63,13 +65,21 @@ const Page = () => {
   const [load, setLoad] = useState<string>("");
   const [active, setActive] = useState<string>("prosites"); // What is been searched
   const [data, setData] = useState<Community[]>([]);
-  const id = "676aa8ad7bb57e99bcf34387";
+  const { data: userData } = useAuthContext();
+  const id = userData?.id;
 
   let debounceTimer: ReturnType<typeof setTimeout>;
   const handleSearch = useCallback(
-    (t: string) => {
-      setText(t);
+    (trimmedText: string) => {
+      const t = trimmedText.trim();
 
+      // If the text is empty after trimming, return early to avoid unnecessary operations
+      if (t === "") {
+        setText(t); // Set empty text for cases where user deletes all text
+        return;
+      }
+
+      setText(trimmedText);
       setLoad("load");
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(async () => {
@@ -91,20 +101,20 @@ const Page = () => {
                 setData(merge);
                 setLoad("done");
               } else {
-                // showErrorToast();
+                setLoad("done");
               }
             } else if (active === "community") {
               const res = await axios.post(`${API}/searchcom/${id}?query=${t}`);
-              console.log(res?.data, "community");
+
               if (res?.status === 200) {
                 const pros = res?.data?.data?.coms;
                 const dp = res?.data?.data?.dps;
-                const c = res?.data?.data?.creatordps;
+                // const c = res?.data?.data?.creatordps;
 
                 // ts-expect-error  Type mismatch
                 const merge = pros?.map((p: Prosite, i: number) => ({
                   dps: dp[i],
-                  creatordps: c[i],
+                  // creatordps: c[i],
                   coms: pros[i],
                 }));
 
@@ -112,6 +122,7 @@ const Page = () => {
                 setLoad("done");
               } else {
                 // showErrorToast();
+                setLoad("done");
               }
             }
             // else if (active === 'all') {
@@ -142,7 +153,7 @@ const Page = () => {
                 setData(res?.data?.posts);
                 setLoad("done");
               } else {
-                // showErrorToast();
+                setLoad("done");
               }
             }
           }
@@ -171,7 +182,7 @@ const Page = () => {
       <div className="h-[40px] w-full flex items-center text-[14px] flex-wrap px-2 gap-2">
         <div
           onClick={() => (
-            setActive("prosites"), setText(""), setData([]), setLoad("load")
+            setActive("prosites"), setText(""), setData([]), setLoad("")
           )}
           className={`p-1 px-4 ${
             active === "prosites"
@@ -183,7 +194,7 @@ const Page = () => {
         </div>
         <div
           onClick={() => (
-            setActive("community"), setText(""), setData([]), setLoad("load")
+            setActive("community"), setText(""), setData([]), setLoad("")
           )}
           className={`p-1 px-4 ${
             active === "community"
@@ -195,7 +206,7 @@ const Page = () => {
         </div>
         <div
           onClick={() => (
-            setActive("posts"), setText(""), setData([]), setLoad("load")
+            setActive("posts"), setText(""), setData([]), setLoad("")
           )}
           className={`p-1 px-4 ${
             active === "posts"
@@ -214,7 +225,10 @@ const Page = () => {
         }`}
       >
         {load === "load" ? (
-          <div>...</div>
+          <RiLoaderLine
+            size={20}
+            className="animate-spin w-full flex self-center"
+          />
         ) : (
           data.map((d: Prosite, i) => (
             <Link
@@ -257,65 +271,79 @@ const Page = () => {
           active === "community" ? "h-[calc(100%-150px)] bg-white" : "hidden"
         }`}
       >
-        {data?.map((d: Community, i: number) => (
-          <div
-            key={i}
-            className="flex h-[60px] items-center border-b justify-between hover:bg-slate-50 active:bg-slate-100 bg-white px-2 gap-2"
-          >
-            <div className="flex items-center gap-2">
-              <div className="h-[40px] w-[40px] border flex items-center justify-center rounded-2xl">
-                <img
-                  src={d?.dps}
-                  className="w-[100%] h-[100%] object-contain rounded-2xl"
-                />
-              </div>
-              <div className="text-[#171717]">
-                <div className="text-[14px] font-semibold">
-                  {d?.coms?.communityName}
+        {load === "load" ? (
+          <RiLoaderLine
+            size={20}
+            className="animate-spin w-full flex self-center"
+          />
+        ) : (
+          data?.map((d: Community, i: number) => (
+            <div
+              key={i}
+              className="flex h-[60px] items-center border-b justify-between hover:bg-slate-50 active:bg-slate-100 bg-white px-2 gap-2"
+            >
+              <div className="flex items-center gap-2">
+                <div className="h-[40px] w-[40px] border flex items-center justify-center rounded-2xl">
+                  <img
+                    src={d?.dps}
+                    className="w-[100%] h-[100%] object-contain rounded-2xl"
+                  />
                 </div>
-                <div className="text-[12px] font-medium">
-                  by {d?.coms?.createdBy?.fullname}
+                <div className="text-[#171717]">
+                  <div className="text-[14px] font-semibold">
+                    {d?.coms?.communityName}
+                  </div>
+                  <div className="text-[12px] font-medium">
+                    by {d?.coms?.createdBy?.fullname}
+                  </div>
                 </div>
               </div>
-            </div>
-            {/* <div className="   hover:bg-slate-100 text-[12px] p-1 px-2 rounded-2xl">
+              {/* <div className="   hover:bg-slate-100 text-[12px] p-1 px-2 rounded-2xl">
               x
             </div> */}
-          </div>
-        ))}
+            </div>
+          ))
+        )}
       </div>
       {/* Posts Data */}
       <div
         className={`${active === "posts" ? "h-[calc(100%-150px)] " : "hidden"}`}
       >
-        {data.map((d: Community, i) => (
-          <div
-            key={i}
-            className="flex h-[60px] items-center border-b justify-between hover:bg-slate-50 active:bg-slate-100 bg-white px-2 gap-2"
-          >
-            <div className="flex items-center gap-2">
-              <div className="h-[50px] w-[50px] border flex items-center justify-center rounded-sm">
-                <img
-                  src={d?.community?.dp}
-                  alt="post"
-                  className="w-[100%] h-[100%] object-cover rounded-2xl"
-                />
+        {load === "load" ? (
+          <RiLoaderLine
+            size={20}
+            className="animate-spin w-full flex self-center"
+          />
+        ) : (
+          data.map((d: Community, i) => (
+            <div
+              key={i}
+              className="flex h-[60px] items-center border-b justify-between hover:bg-slate-50 active:bg-slate-100 bg-white px-2 gap-2"
+            >
+              <div className="flex items-center gap-2">
+                <div className="h-[50px] w-[50px] border flex items-center justify-center rounded-sm">
+                  <img
+                    src={d?.community?.dp}
+                    alt="post"
+                    className="w-[100%] h-[100%] object-cover rounded-2xl"
+                  />
+                </div>
+                <div className="text-[#171717]">
+                  <div className="text-[14px] font-semibold">
+                    {d?.community?.communityName}
+                  </div>
+                  <div className="text-[12px] font-medium">
+                    {" "}
+                    {d?.sender?.fullname}
+                  </div>
+                </div>
               </div>
-              <div className="text-[#171717]">
-                <div className="text-[14px] font-semibold">
-                  {d?.community?.communityName}
-                </div>
-                <div className="text-[12px] font-medium">
-                  {" "}
-                  {d?.sender?.fullname}
-                </div>
+              <div className="  hover:bg-slate-100 text-[12px] p-1 px-2 rounded-2xl">
+                x
               </div>
             </div>
-            <div className="  hover:bg-slate-100 text-[12px] p-1 px-2 rounded-2xl">
-              x
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );

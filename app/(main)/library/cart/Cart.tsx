@@ -4,18 +4,25 @@ import { IoIosAdd } from "react-icons/io";
 import { RiSubtractLine } from "react-icons/ri";
 import Emptycart from "../../../assets/emptycart.png";
 
-type CartItem = {
-  product: {
-    images: { content: string }[];
-    name: string;
-    brandname: string;
-    discountedprice: number;
-    price: number;
-  };
-  quantity: number;
-};
+import { CartItem } from "../layout";
 
-const Cart = ({ cart }: { cart: { data: CartItem[]; totalprice: number } }) => {
+// type CartItem = {
+//   product: {
+//     images: { content: string }[];
+//     name: string;
+//     brandname: string;
+//     discountedprice: number;
+//     price: number;
+//     discount: number;
+//   };
+//   quantity: number;
+// };
+
+const Cart = ({
+  cart,
+}: {
+  cart: { data: Array<CartItem>; totalprice: number };
+}) => {
   // const [cart, setCart] = useState([]);
   // const discountPercentage =
   //   cart?.product?.price && cart?.product?.discountedprice
@@ -25,12 +32,13 @@ const Cart = ({ cart }: { cart: { data: CartItem[]; totalprice: number } }) => {
   //         100
   //       ).toFixed(0)
   //     : 0;
+
   return (
-    <div className="h-[100%]  w-full space-y-2 overflow-y-auto  dark:bg-[#ffffff]">
+    <div className="h-[100%] flex flex-col items-center w-full space-y-2 overflow-y-auto  dark:bg-[#ffffff]">
       {/*-----------------cart box--------------------- */}
       {cart?.data?.length > 0 ? (
         cart?.data?.map((item: CartItem, index: number) => (
-          <div key={index} className=" w-full  px-2 border-b dark:bg-[#ff5f5f]">
+          <div key={index} className=" w-full  px-2 border-b ">
             <div className="h-full min-w-[196px] w-full  rounded-3xl ">
               <div className="flex py-2 items-center gap-2">
                 <div className="h-[90px] w-[90px] border flex items-center justify-center rounded-lg">
@@ -50,15 +58,14 @@ const Cart = ({ cart }: { cart: { data: CartItem[]; totalprice: number } }) => {
                   </div>
                   <div className="gap-2 flex items-center">
                     <div className="text-[12px] font-medium">
-                      ₹{item?.product?.discountedprice}
+                      ₹{item?.product?.price - item?.product?.discount}
                     </div>
                     <div className="text-[10px] text-[#4e4e4e] font-medium">
                       <s>₹{item?.product?.price}</s>
                     </div>
                     <div className="text-[12px] text-green-500 font-medium">
                       {(
-                        (item?.product?.discountedprice /
-                          item?.product?.price) *
+                        (item?.product?.discount / item?.product?.price) *
                         100
                       ).toFixed(0)}
                       % off

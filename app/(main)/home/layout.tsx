@@ -3,6 +3,7 @@ import { useState } from "react";
 import NewForYou from "./components/NewForYou";
 import Community from "./components/Community";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 // import { useAuthContext } from "@/app/auth/components/auth";
 
 export default function HomeLayout({
@@ -11,15 +12,21 @@ export default function HomeLayout({
   children: React.ReactNode;
 }>) {
   const [switcher, setSwitcher] = useState<number>(1);
-
+  const path = usePathname();
   return (
     <div className="h-full border-r flex w-full  pn:max-sm:border-none pn:max-sm:w-full">
-      <div className="h-full border-r pn:max-sm:w-full sm:w-[25%] sm:min-w-[400px]">
+      <div
+        className={` ${
+          path === "/home/insideCommunity"
+            ? "pn:max-sm:hidden"
+            : "h-full border-r pn:max-sm:w-full sm:w-[25%] sm:min-w-[400px]"
+        } `}
+      >
         {/* switcher  */}
         <div className="grid grid-cols-1 h-[50px] relative p-2 rounded-xl w-fit">
           <div className="flex rounded-xl items-center h-[90%] text-[#303030] select-none text-[14px]">
             <Link
-              href={"../home/insideCommunity"}
+              href={"../home"}
               onClick={() => {
                 setSwitcher(1);
               }}
@@ -35,7 +42,7 @@ export default function HomeLayout({
               }`}
             ></div>
             <Link
-              href={"../home/insideCommunity"}
+              href={"../home"}
               onClick={() => {
                 setSwitcher(2);
               }}
@@ -65,7 +72,13 @@ export default function HomeLayout({
         </div>
       </div>
       {/* main  */}
-      <div className="h-screen pn:max-sm:hidden w-full bg-white">
+      <div
+        className={` ${
+          path === "/home/insideCommunity"
+            ? "w-full bg-white h-screen"
+            : "pn:max-sm:hidden"
+        } `}
+      >
         {children}
       </div>
     </div>

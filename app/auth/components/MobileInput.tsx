@@ -1,4 +1,5 @@
 import React from "react";
+import { RiLoaderLine } from "react-icons/ri";
 const MobileInput = ({
   loading,
   number,
@@ -37,7 +38,11 @@ const MobileInput = ({
           onClick={sendPhoneOtp}
           className="bg-black text-white w-full flex justify-center items-center h-12 font-medium rounded-xl"
         >
-          {loading ? "Loading..." : "Continue"}
+          {loading ? (
+            <RiLoaderLine size={20} className="animate-spin" />
+          ) : (
+            "Continue"
+          )}
         </button>
       </div>
     </div>

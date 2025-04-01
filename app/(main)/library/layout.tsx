@@ -28,13 +28,14 @@ import { useAuthContext } from "@/app/auth/components/auth";
 interface MainLayoutProps {
   children: ReactNode;
 }
-type CartItem = {
+export type CartItem = {
   product: {
     images: { content: string }[];
     name: string;
     brandname: string;
     discountedprice: number;
     price: number;
+    discount: number;
   };
   quantity: number;
 };
@@ -80,7 +81,7 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
   const fetchCart = async () => {
     try {
       const res = await axios.get(`${API}/getCart/${userId}`);
-      console.log(res?.data, "ress");
+
       if (res?.data?.success) {
         setCart(res?.data?.data);
         // setCart({ data: res?.data?.data, totalprice: res?.data?.totalprice });
@@ -102,7 +103,7 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
   const fetchSubscriptions = async () => {
     try {
       const res = await axios.get(`${API}/fetchallsubscriptions/${userId}`);
-      console.log(res?.data, "subs");
+
       if (res?.data?.success) {
         setSubscriptions(res?.data?.merged || []);
       }
@@ -111,8 +112,10 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
     }
   };
   useEffect(() => {
-    fetchCart();
-  }, []);
+    if (userId) {
+      fetchCart();
+    }
+  }, [userId]);
   // console.log(cart?.product, "hi");
 
   //   const myCookie = Cookies.get("excktn");

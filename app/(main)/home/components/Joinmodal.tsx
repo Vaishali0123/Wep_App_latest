@@ -42,9 +42,9 @@ const JoinPopup = ({ comdata }: JoinPopupProps) => {
   if (isJoinedPopup) return null;
 
   return (
-    <div className="h-full w-full duration-200 right-[0%] ease-in-out bg-[#ececec32] backdrop-blur absolute top-0">
-      <div className="w-full h-full bg-black bg-opacity-70 flex justify-center items-center z-50">
-        <div className="bg-white text-black rounded-2xl shadow-lg p-2 w-full max-w-[30%]">
+    <div className="pn:max-sm:h-[calc(100%-100px)]  pn:max-sm:top-[50px]  h-full top-0 w-full duration-200 right-0 ease-in-out bg-[#ececec32] backdrop-blur-sm absolute ">
+      <div className="w-full h-full bg-[#c1c1c132] md:bg-[#87878740] bg-opacity-70 flex justify-center items-center z-50">
+        <div className="bg-white text-black rounded-2xl shadow-lg p-2 w-[30%]  pn:max-sm:w-[80%]">
           <div className="flex flex-col gap-2">
             <div className="flex gap-2 items-center ">
               <img

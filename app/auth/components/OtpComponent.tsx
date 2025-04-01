@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import useResendTimer from "../../hooks/useResendTimer";
 import { phoneAuth } from "../../utils/otpUtils";
 import InputOTPPattern from "./InputOTPPattern";
+import { RiLoaderLine } from "react-icons/ri";
 
 const OtpComponent = ({
   otp,
@@ -34,7 +35,7 @@ const OtpComponent = ({
       <div>
         <div className="text-center flex flex-col gap-6 text-sm text-[#717171]">
           <div className="flex flex-col gap-1">
-            <div>We’re sending an SMS to phone number </div>
+            <div>OTP has been sent to</div>
             <div>
               +91 {phoneNumber}{" "}
               <span
@@ -81,7 +82,11 @@ const OtpComponent = ({
           onClick={verificationOfPhone}
           className="bg-black text-white w-full flex justify-center items-center h-12 font-medium rounded-xl"
         >
-          {loading ? "Loading..." : "Continue"}
+          {loading ? (
+            <RiLoaderLine size={20} className="animate-spin" />
+          ) : (
+            "Continue"
+          )}
         </button>
       </div>
     </div>

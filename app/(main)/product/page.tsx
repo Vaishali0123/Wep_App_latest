@@ -1,15 +1,17 @@
 "use client";
+import { useAuthContext } from "@/app/auth/components/auth";
 import { API } from "@/app/utils/helpers";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { BsStar, BsStarFill } from "react-icons/bs";
 import { CiDeliveryTruck } from "react-icons/ci";
 import { FaRankingStar } from "react-icons/fa6";
 import { GrSecure } from "react-icons/gr";
 import { HiOutlineCash } from "react-icons/hi";
 import { IoStorefrontOutline } from "react-icons/io5";
-import { MdDeliveryDining, MdOutlineLocationOn } from "react-icons/md";
+import { MdDeliveryDining } from "react-icons/md";
 import { TbTruckReturn } from "react-icons/tb";
 interface ProductData {
   _id?: string;
@@ -22,6 +24,11 @@ interface ProductData {
   quantity?: number;
   images?: { content: string }[];
   producturl?: string;
+  discount?: number;
+  creator?: {
+    fullname?: string;
+    username?: string;
+  };
 }
 interface ProductImage {
   content: string;
@@ -29,12 +36,16 @@ interface ProductImage {
 const PageContent = () => {
   const searchParams = useSearchParams();
   const userId = searchParams.get("userId");
+  const [load, setLoad] = useState(false);
+  const { data } = useAuthContext();
   // const productData = JSON.parse(productdata as string);
   // console.log(productData, "productData");
   const productId = searchParams.get("id");
-  const [active, setActive] = React.useState<boolean>(false);
+  // const [active, setActive] = React.useState<boolean>(false);
   const [productData, setProductData] = useState<ProductData>({});
-  const [quantity, setQuantity] = useState(1);
+  // const [quantity, setQuantity] = useState(1);
+  const quantity = 1;
+  const active = false;
 
   const getProduct = async () => {
     try {
@@ -48,6 +59,31 @@ const PageContent = () => {
   };
   const total = 5; // Assuming a 5-star rating system
   const filledStars = Math.round(productData?.totalstars || 0); // Round the
+
+  const buynow = async (productId: string, quantity: number, price: number) => {
+    try {
+      setLoad(true);
+      const res = await axios.post(`${API}/placeorder/${data?.id}`, {
+        productId: productId,
+        action: "add",
+        quantity: 1,
+        paymentMode: "Cash",
+        finalprice: price,
+      });
+
+      if (res?.data?.success) {
+        toast?.success("Product added to cart");
+      } else {
+        toast.error("Something went wrong! Please try again later");
+      }
+      setLoad(false);
+    } catch (e) {
+      toast.error("Something went wrong");
+      console.log(e);
+    }
+  };
+
+  //ADD TO CART
   const UpdateCart = async () => {
     try {
       const res = await axios.post(`${API}/updateCart/${userId}/${productId}`, {
@@ -56,18 +92,18 @@ const PageContent = () => {
       });
       console.log(res?.data, "updateCart");
 
-      // if (res?.data?.success) {
-      //   setProductData(res?.data?.data);
-      // }
+      if (res?.data?.success) {
+        toast.success("Product added to cart.");
+      }
     } catch (e) {
+      toast.error("Something went wrong!");
       console.log(e);
     }
   };
   const discountPercentage =
-    productData?.price && productData?.discountedprice
+    productData?.price && productData?.discount
       ? (
-          ((productData?.price - productData?.discountedprice) /
-            productData?.price) *
+          ((productData?.price - productData?.discount) / productData?.price) *
           100
         ).toFixed(0)
       : 0;
@@ -75,9 +111,9 @@ const PageContent = () => {
     getProduct();
   }, []);
 
-  console.log(setQuantity, setActive, "hi");
   return (
     <div className="h-screen w-full flex pn:max-md:flex-col relative pn:max-md:fixed pn:max-md:overflow-auto bg-white">
+      <Toaster />
       {/* first section  */}
       <div className="h-full w-[40%] pn:max-md:w-full flex pn:max-md:flex-col-reverse">
         <div className="pn:max-md:h-[100px]  pn:max-md:w-full border-t  md:border-r md:w-[100px] flex gap-2 items-center md:flex-col py-2">
@@ -209,7 +245,7 @@ const PageContent = () => {
             );
           })}
 
-          <div className="text-blue-700 text-[14px]"> 14 reviews</div>
+          {/* <div className="text-blue-700 text-[14px]"> 14 reviews</div> */}
         </div>
         {/* Size  */}
         {/* <div>
@@ -250,10 +286,13 @@ const PageContent = () => {
         {/* Pricing  */}
         <div>
           <div className="flex gap-2 items-center">
-            <div className="flex font-semibold text-[25px]">
-              &#x20b9; {productData?.discountedprice}
-            </div>
-            <div className="text-red-600">{discountPercentage}%</div>
+            {discountPercentage === 0 && (
+              <div className="flex font-semibold text-[25px]">
+                &#x20b9; {productData?.price}
+              </div>
+            )}
+
+            <div className="text-red-600">{discountPercentage}% Off</div>
           </div>
           <div className="text-[#464646] text-[14px] font-medium flex items-center gap-1">
             {" "}
@@ -267,24 +306,24 @@ const PageContent = () => {
         <div className="border w-full pn:max-md:rounded-t-2xl md:rounded-3xl space-y-2 md:p-4 text-[14px]">
           <div
             className={`pn:max-md:absolute z-0 bg-white pn:max-md:p-4 w-full space-y-2 pn:max-md:border-t rounded-t-2xl duration-150 ${
-              active === true ? "pn:max-md:bottom-[50px]" : "-bottom-96 "
+              active ? "pn:max-md:bottom-[50px]" : "-bottom-96 "
             }`}
           >
             <div className="">
-              <span className="text-blue-600">FREE</span> delivery Wednesday, 22
-              January on orders dispatched by Grovyo over ₹499.{" "}
+              <span className="text-blue-600">FREE</span> delivery on orders
+              dispatched by Grovyo over ₹499.
               <span className="text-blue-600 hover:underline">Details</span>
             </div>
-            <div>
+            {/* <div>
               Or fastest delivery Tomorrow, 21 January. Order within 22 hrs 15
               mins.{" "}
               <span className="text-blue-600 hover:underline">Details</span>
-            </div>
+            </div> */}
             {/* location  */}
-            <div className="flex gap-2  w-full p-2 bg-slate-100 rounded-2xl items-center">
+            {/* <div className="flex gap-2  w-full p-2 bg-slate-100 rounded-2xl items-center">
               <MdOutlineLocationOn />
-              <div className="text-blue-700">set your location</div>
-            </div>
+              <div className="text-blue-700">Address</div>
+            </div> */}
             {/* stock  */}
             <div className="text-green-600 font-semibold text-[18px]">
               {productData?.quantity
@@ -297,16 +336,20 @@ const PageContent = () => {
             <div>
               <div className="flex gap-1">
                 <div className="text-gray-600">Payment:</div>{" "}
-                <div className="text-blue-600">cod</div>
+                <div className="text-blue-600">COD</div>
               </div>
-              <div className="flex gap-1">
+              {/* <div className="flex gap-1">
                 <div className="text-gray-600">Ships from:</div>{" "}
                 <div className="text-blue-600">cod</div>
-              </div>
-              <div className="flex gap-1">
-                <div className="text-gray-600">Sold by:</div>
-                <div className="text-blue-600">vaishali story</div>
-              </div>
+              </div> */}
+              {productData?.creator?.fullname && (
+                <div className="flex gap-1">
+                  <div className="text-gray-600">Sold by:</div>
+                  <div className="text-blue-600">
+                    {productData?.creator?.username}
+                  </div>
+                </div>
+              )}
             </div>
             {/* order  */}
             <div className=" bg-slate-50 p-2 flex justify-between rounded-2xl">
@@ -328,16 +371,24 @@ const PageContent = () => {
             >
               Add to cart
             </div>
-            <div
+            {/* <div
               className={`absolute bg-green-600 duration-500  text-white  flex items-center justify-center rounded-2xl ${
                 active === true
                   ? "w-[10px] p-2 -left-[400%] top-[25%] "
                   : "  w-[140px] p-2 left-20 top-[48%] z-10"
               }`}
-            ></div>
-            <div className="border-2 border-dashed flex items-center justify-center w-full p-2 rounded-2xl">
+            ></div> */}
+            <button
+              disabled={load || !productData?._id || !productData?.price}
+              onClick={() => {
+                if (productData?._id && productData?.price) {
+                  buynow(productData?._id, 1, productData?.price);
+                }
+              }}
+              className="border-2 border-dashed flex items-center justify-center w-full p-2 rounded-2xl"
+            >
               Buy now
-            </div>
+            </button>
           </div>
         </div>
       </div>

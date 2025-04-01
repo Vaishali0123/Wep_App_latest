@@ -4,6 +4,7 @@ import useResendTimer from "../../hooks/useResendTimer";
 import toast from "react-hot-toast";
 import { emailAuth } from "../../utils/otpUtils";
 import InputOTPPattern from "./InputOTPPattern";
+import { RiLoaderLine } from "react-icons/ri";
 
 const EmailOtpComponent = ({
   email,
@@ -33,7 +34,7 @@ const EmailOtpComponent = ({
       <div>
         <div className="text-center flex flex-col gap-6 text-sm text-[#717171]">
           <div className="flex flex-col ">
-            <div>We’re sending an SMS to email </div>
+            <div>OTP has been sent to</div>
             <div>
               {email}
               <span
@@ -80,7 +81,11 @@ const EmailOtpComponent = ({
           onClick={verifyEmailOTP}
           className="bg-black text-white w-full flex justify-center items-center h-12 font-medium rounded-xl"
         >
-          {loading ? "Loading..." : "Continue"}
+          {loading ? (
+            <RiLoaderLine size={20} className="animate-spin" />
+          ) : (
+            "Continue"
+          )}
         </button>
       </div>
     </div>

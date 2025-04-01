@@ -29,10 +29,10 @@ export const config = {
   matcher: [
     "/auth/signup",
     "/auth/login",
-    "/home",
+    // "/home",
     // "/",
     "/chat",
-    "/home/:path*",
+    // "/home/:path*",
     "/library",
     "/library/:path*",
     "/library",

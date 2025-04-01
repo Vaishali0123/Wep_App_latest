@@ -139,15 +139,16 @@ export const verifyOTP = async (number: string, otp: string) => {
     });
 
     if (result) {
-      console.log("OTP Verified Successfully");
+      toast.success("OTP Verified Successfully");
+      // console.log("OTP Verified Successfully");
       return true;
     } else {
-      console.error("OTP Verification Failed");
+      // console.error("OTP Verification Failed");
       toast.error("OTP Verification Failed");
       return false;
     }
   } catch (error: unknown) {
-    console.error("OTP Verification Error: ", error);
+    console.error(error);
     toast.error("An error occurred during OTP verification");
   } finally {
   }

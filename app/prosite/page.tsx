@@ -5,8 +5,11 @@ import { ImArrowRight2 } from "react-icons/im";
 import { SlArrowRightCircle } from "react-icons/sl";
 // import { useSelector } from "react-redux";
 import { useSearchParams } from "next/navigation";
-import { getProsite } from "./components/Prositefunc";
+// import { getProsite } from "./components/Prositefunc";
 import { useAuthContext } from "../auth/components/auth";
+import axios from "axios";
+import { API } from "../utils/helpers";
+import toast, { Toaster } from "react-hot-toast";
 
 export interface PrositeData {
   profilepic: string;
@@ -32,33 +35,26 @@ export interface PrositeData {
     }[];
   }[];
 }
-// interface ProData {
-//   products: {
-//     name: string;
-//     brandname: string;
-//     discountedprice: number;
-//     price: number;
-//     _id: string;
-//     images: { content: string }[];
-//   }[];
-// }
 
 export interface Community {
   dp: string;
   communityName: string;
   desc: string;
   type: string;
-  topics?: Topic[];
+  topic?: Topic;
 }
 
 export interface Topic {
   nature: string;
-  posts: Post[];
+  posts?: Post[];
+  title?: string;
+  description?: string;
 }
 
 export interface Post {
-  title: string;
-  description: string;
+  content: string;
+  title?: string;
+  description?: string;
   post: { content: string }[];
 }
 
@@ -77,11 +73,14 @@ export interface Product {
   price: number;
   discountedprice: number;
   images?: { content: string }[];
+  discount?: number;
+  _id?: string;
 }
 
 const PageContent = () => {
   const { data } = useAuthContext();
   const [loading, setLoading] = useState(false);
+  const [load, setLoad] = useState(false);
   const [prositeData, setPrositeData] = useState<PrositeData | null>(null);
   const searchparams = useSearchParams();
   const id = searchparams.get("id");
@@ -102,28 +101,54 @@ const PageContent = () => {
   //   }
   // };
 
-  // const getProsite = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const res = await axios.get(`${API}/getprositedata/${id}`);
-  //     if (res?.data?.success) {
-  //       setPrositeData(res?.data?.userDetails);
-  //     }
-  //   } catch (e: unknown) {
-  //     console.log(e);
-  //   }
-  //   setLoading(false);
-  // };
+  const addtocart = async (productId: string) => {
+    try {
+      setLoad(true);
+      const res = await axios.post(
+        `${API}/updateCart/${data?.id}/${productId}`,
+        {
+          action: "add",
+          quantity: 1,
+        }
+      );
+
+      if (res?.data?.success) {
+        toast?.success("Product added to cart");
+      } else {
+        toast.error("Something went wrong! Please try again later");
+      }
+      setLoad(false);
+    } catch (e) {
+      toast.error("Something went wrong");
+      console.log(e);
+    }
+  };
+
+  const getProsite = async (id: string) => {
+    setLoading(true);
+    try {
+      const res = await axios.get(`${API}/getprositedata/${id}`);
+      console.log(res?.data);
+
+      if (res?.data?.success) {
+        setPrositeData(res?.data?.userDetails);
+      }
+    } catch (e: unknown) {
+      console.log(e);
+    }
+    setLoading(false);
+  };
 
   useEffect(() => {
-    if (id && !hasfetched.current) {
+    if (id && !hasfetched.current && !loading) {
       hasfetched.current = true;
-      getProsite(id, setPrositeData, setLoading);
+      getProsite(id);
     }
   }, [id]);
 
   return (
     <div className=" bg-white overflow-auto h-screen w-full ">
+      <Toaster />
       {loading === true || !id ? (
         <div>
           <div className="w-full h-[calc(100%-50px)] bg-defaultprositelight  bg-center bg-cover">
@@ -172,7 +197,9 @@ const PageContent = () => {
             <div className="w-[60%] bg-[#ffffffb3] border p-4 rounded-3xl">
               <div className="font-semibold">Bio:</div>
               <div>{prositeData?.bio}</div>
-              <div className="font-semibold pt-2">Contact Information:</div>
+              {(prositeData?.email || prositeData?.phone) && (
+                <div className="font-semibold pt-2">Contact Information:</div>
+              )}
               {prositeData?.email ? (
                 <div>Email : {prositeData?.email}</div>
               ) : null}
@@ -315,7 +342,7 @@ const PageContent = () => {
           {/* fetched html */}
           <div className="flex flex-col w-screen h-screen items-center¯">
             <object
-              data="https://d95e0jpum1wnk.cloudfront.net/aryansh.html"
+              data={`https://d95e0jpum1wnk.cloudfront.net/${prositeData?.username}.html`}
               type="text/html"
               className="w-full h-full"
             ></object>
@@ -338,8 +365,10 @@ const PageContent = () => {
             <div className="w-[60%] bg-[#ffffffb3] border p-4 rounded-3xl">
               <div className="font-semibold">Bio:</div>
               <div>{prositeData?.bio}</div>
-              <div className="font-semibold pt-2">Contact Information:</div>
-              {prositeData?.email ? (
+              {(prositeData?.email || prositeData?.phone) && (
+                <div className="font-semibold pt-2">Contact Information:</div>
+              )}
+              {prositeData?.email != "undefined" && prositeData?.email ? (
                 <div>Email : {prositeData?.email}</div>
               ) : null}
               {prositeData?.phone ? (
@@ -355,18 +384,18 @@ const PageContent = () => {
           <div className="w-full flex flex-col  items-center space-y-2 justify-center">
             <div className="font-semibold text-[18px]">Communities</div>
             <div className="w-full h-full  px-2  items-center justify-center flex flex-col gap-2 overflow-auto">
-              {prositeData?.communities
-                ?.filter((item: Community) => item?.type === "public")
-                .map((item: Community, index: number) => {
+              {prositeData?.communities.map(
+                (item: Community, index: number) => {
                   return (
                     <div key={index} className="flex flex-row">
                       <div className="border p-2 w-[230px] h-[230px]    flex flex-col justify-between rounded-3xl">
                         <div className="">
                           <div className="bg-slate-300 rounded-[20px] h-[50px] w-[50px]">
                             <img
+                              alt="dp"
                               loading="lazy"
                               src={item?.dp}
-                              className="rounded-3xl"
+                              className="cover  rounded-[20px] w-full h-full"
                             />
                           </div>
                           <div className="text-[18px]  font-semibold">
@@ -384,55 +413,57 @@ const PageContent = () => {
                           <ImArrowRight2 className="bg-white text-black rounded-full p-1 border" />
                         </div>
                       </div>
-                      {item?.topics &&
-                        item?.topics
-                          // ?.filter((d: any) => d?.nature === "post")
-                          .map((t: Topic, i: number) => {
-                            if (t?.nature === "post") {
-                              if (t?.posts?.length > 0) {
-                                return (
-                                  <div
-                                    key={i}
-                                    className="border p-2 px-2 h-[230px]   flex justify-between rounded-3xl"
-                                  >
-                                    <div className="border p-2 w-[210px] h-[210px]    flex flex-col justify-between rounded-3xl">
-                                      <div className="">
-                                        <div className="bg-slate-300 rounded-[20px] h-[50px] w-[50px]">
-                                          <img
-                                            loading="lazy"
-                                            src={t?.posts[0]?.post[0]?.content}
-                                            className="rounded-3xl"
-                                          />
-                                        </div>
-                                        <div className="text-[18px]  font-semibold">
-                                          {t?.posts[0]?.title}
-                                        </div>
-
-                                        <div className="">
-                                          {t?.posts[0]?.description?.length > 50
-                                            ? `${t?.posts[0]?.description.slice(
-                                                0,
-                                                50
-                                              )}...`
-                                            : t?.posts[0]?.description}
-                                        </div>
-                                      </div>
-                                      <div className="flex items-center gap-2 p-2 px-4 justify-between bg-black text-white rounded-2xl ">
-                                        <div>View</div>
-                                        <ImArrowRight2 className="bg-white text-black rounded-full p-1 border" />
-                                      </div>
-                                    </div>
+                      {item?.topic &&
+                      item?.topic?.posts &&
+                      item?.topic?.posts?.length > 0 ? (
+                        item?.topic?.posts?.map((t: Post, i: number) => {
+                          return (
+                            <div
+                              key={i}
+                              className="border p-2 px-2 h-[230px]   flex justify-between rounded-3xl"
+                            >
+                              <div className="border p-2 w-[210px] h-[210px]    flex flex-col justify-between rounded-3xl">
+                                <div className="">
+                                  <div className="bg-slate-300 rounded-[20px] h-[50px] w-[50px]">
+                                    <img
+                                      loading="lazy"
+                                      src={t?.post?.[0]?.content}
+                                      className="rounded-3xl"
+                                    />
                                   </div>
-                                );
-                              } else {
-                                return null;
-                              }
-                            }
-                            return null;
-                          })}
+                                  {t?.title && (
+                                    <div className="text-[18px]  font-semibold">
+                                      {t?.title}
+                                    </div>
+                                  )}
+
+                                  {t?.description && (
+                                    <div className="">
+                                      ({" "}
+                                      {t?.description?.length > 50
+                                        ? `${t?.description.slice(0, 50)}...`
+                                        : t?.description}
+                                      )
+                                    </div>
+                                  )}
+                                </div>
+                                <div className="flex items-center gap-2 p-2 px-4 justify-between bg-black text-white rounded-2xl ">
+                                  <div>View</div>
+                                  <ImArrowRight2 className="bg-white text-black rounded-full p-1 border" />
+                                </div>
+                              </div>
+                            </div>
+                          );
+
+                          return null;
+                        })
+                      ) : (
+                        <div>No Posts Available</div>
+                      )}
                     </div>
                   );
-                })}
+                }
+              )}
             </div>
           </div>
           {/* Store  */}
@@ -449,45 +480,86 @@ const PageContent = () => {
                             key={i}
                             className="border p-2  bg-white w-[230px] flex flex-col space-y-2 items-center rounded-3xl"
                           >
-                            <div className=" w-full h-[230px] rounded-[20px] ">
-                              <img
-                                loading="lazy"
-                                alt="Product img"
-                                src={d?.images?.[0]?.content}
-                                className="object-cover w-full h-full rounded-[20px]"
-                              />
-                            </div>
-                            <div className="text-[14px]  w-[230px] text-center  font-semibold">
-                              {d?.name}
-                            </div>
-                            <div className="text-[12px] font-medium">
-                              by {d?.brandname}
-                            </div>
-                            <div className="text-[14px] text-end flex gap-2">
-                              <div className="text-[16px] font-semibold">
-                                ₹ {d?.discountedprice}
-                              </div>{" "}
-                              {/* <div className="text-blue-600 text-[12px]">79% off</div> */}
-                            </div>
-                            <div className="text-[12px] font-semibold flex">
-                              M.R.P. :
-                              <div className=" text-red-600">₹{d?.price}</div>
-                            </div>
+                            <Link
+                              href={{
+                                pathname: "../product",
+                                query: {
+                                  userId: data?.id,
+                                  id: d?._id,
+                                },
+                              }}
+                              className=" bg-white w-full flex flex-col space-y-2 items-center rounded-3xl"
+                            >
+                              <div className=" w-full h-[230px] rounded-[20px] ">
+                                <img
+                                  loading="lazy"
+                                  alt="Product img"
+                                  src={d?.images?.[0]?.content}
+                                  className="object-cover w-full h-full rounded-[20px]"
+                                />
+                              </div>
+                              <div className="text-[14px]  w-[230px] text-center  font-semibold">
+                                {d?.name}
+                              </div>
+                              {d?.brandname != "N/A" &&
+                                d?.brandname != "N/A" && (
+                                  <div className="text-[12px] font-medium">
+                                    by {d?.brandname}
+                                  </div>
+                                )}
 
-                            <div className="flex items-center w-full gap-2 p-2 px-4 justify-center bg-black text-white rounded-2xl ">
+                              {d?.discount && d?.discount > 0 && (
+                                <div className="text-[14px] text-end flex gap-2">
+                                  <div className="text-[16px] font-semibold">
+                                    ₹ {d?.price - d?.discount}
+                                  </div>
+                                  {/* <div className="text-blue-600 text-[12px]">79% off</div> */}
+                                </div>
+                              )}
+                              <div className="text-[12px] font-semibold flex">
+                                M.R.P. :
+                                <div className=" text-red-600">₹{d?.price}</div>
+                              </div>
+                            </Link>
+                            <div
+                              // href={{
+                              //   pathname: "../product",
+                              //   query: {
+                              //     userId: data?.id,
+                              //     id: d?._id,
+                              //   },
+                              // }}
+                              className="flex flex-col items-center w-full font-semibold bg-blue-500 gap-2 p-2 px-4 justify-center text-white rounded-2xl "
+                            >
                               <Link
                                 href={{
                                   pathname: "../product",
                                   query: {
                                     userId: data?.id,
+                                    id: d?._id,
                                   },
                                 }}
-                                // href={`../product/${item?.[0]?._id}`}
                               >
-                                Add to cart
+                                View Product
                               </Link>
+
                               {/* <ImArrowRight2 className="bg-white text-black rounded-full p-1 border" /> */}
                             </div>
+                            <button
+                              disabled={load}
+                              onClick={() => {
+                                if (d?._id) {
+                                  addtocart(d?._id);
+                                } else {
+                                  toast.error(
+                                    "Some error occurred!Please refresh the page"
+                                  );
+                                }
+                              }}
+                              className="flex flex-col items-center font-semibold w-full gap-2 p-2 px-4 justify-center bg-green-600 text-white rounded-2xl "
+                            >
+                              Add to Cart
+                            </button>
                           </div>
                         ))
                       ) : (

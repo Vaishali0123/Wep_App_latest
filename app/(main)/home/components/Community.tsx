@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import Post, { PostDataItem } from "./Post";
 import { useAuthContext } from "@/app/auth/components/auth";
 import Link from "next/link";
+import { RiLoaderLine } from "react-icons/ri";
 
 type PostData = PostDataItem[];
 
@@ -113,7 +114,13 @@ const Community = () => {
         // loading={loading}
       />
       {loading && (
-        <div className="text-center my-4 text-gray-500">Loading...</div>
+        <div className="text-center my-4 text-gray-500">
+          {" "}
+          <RiLoaderLine
+            size={30}
+            className="animate-spin w-full flex self-center"
+          />
+        </div>
       )}
 
       {!hasMore && postData.length > 0 && (

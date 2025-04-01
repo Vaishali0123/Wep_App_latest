@@ -1,7 +1,7 @@
 "use client";
 import { API } from "@/app/utils/helpers";
 import axios from "axios";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { BiHide } from "react-icons/bi";
 // import Keyboard from "../components/Keyboard";
@@ -9,7 +9,7 @@ import { BsEmojiSmile, BsReplyAll } from "react-icons/bs";
 import { CiLocationArrow1 } from "react-icons/ci";
 import { FaRegShareSquare } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
-import { HiMenuAlt3, HiOutlineViewGridAdd } from "react-icons/hi";
+import { HiOutlineViewGridAdd } from "react-icons/hi";
 import { IoChevronBack } from "react-icons/io5";
 import { MdDeleteOutline } from "react-icons/md";
 import { FaHandsClapping } from "react-icons/fa6";
@@ -23,6 +23,7 @@ import Link from "next/link";
 import { AdDetails } from "../components/Post";
 import toast, { Toaster } from "react-hot-toast";
 const PageContent = () => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const comId = searchParams.get("comId");
   const userId = searchParams.get("userId");
@@ -261,7 +262,12 @@ const PageContent = () => {
           {/* header  */}
           <div className="h-[50px] w-full bg-white border-b px-2 flex items-center justify-between ">
             <div className="gap-2 flex items-center">
-              <IoChevronBack className="h-[30px] w-[30px] rounded-2xl md:hidden " />
+              <IoChevronBack
+                onClick={() => {
+                  router.back();
+                }}
+                className="h-[30px] w-[30px] rounded-2xl   md:hidden "
+              />
               <div className="h-[40px] w-[40px] rounded-2xl border">
                 <img
                   loading="lazy"
@@ -277,12 +283,12 @@ const PageContent = () => {
                 </div>
               </div>
             </div>
-            <div
+            {/* <div
               onClick={() => setClick(false)}
               className="h-[40px] w-[40px] text-[#171717] hover:bg-slate-50 active:bg-slate-100 bg-white border border-dashed rounded-2xl flex items-center justify-center "
             >
               <HiMenuAlt3 className="h-5 w-5" />
-            </div>
+            </div> */}
           </div>
           {/* subheader  */}
           <div className="h-[50px] w-full bg-white border-b px-2 flex items-center gap-2 justify-center ">
@@ -723,7 +729,6 @@ const PageContent = () => {
             }`}
           >
             <div className="h-[50px] bg-white border-b flex items-center justify-between px-2">
-              <div></div>
               <div
                 onClick={() => setClick(true)}
                 className="h-[40px] w-[40px] text-[#171717] hover:bg-slate-50 active:bg-slate-100 bg-white border border-dashed rounded-2xl flex items-center justify-center "
@@ -741,7 +746,7 @@ const PageContent = () => {
           )}
         </>
       ) : (
-        <div className="bg-white border-l-2 w-full overflow-auto h-screen flex items-center justify-center">
+        <div className="bg-green-500 border-l-2 w-full overflow-auto h-screen  flex items-center justify-center">
           {/* <div className="   text-black text-md py-2">
             Click on any post to view whole community
           </div> */}

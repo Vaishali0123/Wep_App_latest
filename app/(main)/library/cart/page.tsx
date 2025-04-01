@@ -3,19 +3,62 @@ import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useState } from "react";
 import Emptycart from "../../../assets/emptycart.png";
+import axios from "axios";
+import { API } from "@/app/utils/helpers";
+import { useAuthContext } from "@/app/auth/components/auth";
+import toast, { Toaster } from "react-hot-toast";
 
 const PageContent = () => {
   const searchParams = useSearchParams();
   const cart = searchParams.get("cart"); //
   const parsedCart = cart ? JSON.parse(cart) : null;
   const [loading, setLoading] = useState(true);
+
+  const { data } = useAuthContext();
+  const [load, setLoad] = useState(false);
+
+  const buynow = async () => {
+    try {
+      setLoad(true);
+
+      if (!data?.id) {
+        toast.error("User not found! Please login or refresh the page.");
+        return;
+      }
+
+      if (!parsedCart?.data?.length) {
+        toast.error("Cart is empty!");
+        return;
+      }
+
+      const res = await axios.post(`${API}/placeorder/${data?.id}`, {
+        cartId: parsedCart._id, // Send cart ID to identify the cart
+        paymentMode: "Cash",
+        finalprice: parsedCart.totalprice,
+        discount: parsedCart.discount,
+      });
+
+      if (res?.data?.success) {
+        toast.success("Order placed successfully!");
+      } else {
+        toast.error("Something went wrong! Please try again later.");
+      }
+    } catch (e) {
+      toast.error("Something went wrong");
+      console.log(e);
+    }
+    setLoad(false);
+  };
+
   useEffect(() => {
     if (cart) {
       setLoading(false);
     }
   }, [cart]);
+
   return (
     <div className="bg-white h-full w-full  flex flex-col items-center justify-center">
+      <Toaster />
       {loading || parsedCart?.data?.length === 0 ? (
         <>
           <Image
@@ -52,37 +95,43 @@ const PageContent = () => {
             <div className="w-full flex flex-col items-center bg-[#ffffff] p-2 border border-dashed rounded-2xl">
               <div className="flex w-full justify-between border-b p-2">
                 <div className="text-[#000000] px-2 text-[14px]">Total MRP</div>
-                <div className="text-[#3478ff] px-2 text-[14px]">
+                <div className="text-black px-2 text-[14px]">
                   ₹ {parsedCart?.totalprice}
+                </div>
+              </div>
+              <div className="flex w-full justify-between p-2">
+                <div className="text-[#000000] px-2 text-[14px]">Quantity</div>
+                <div className="text-black px-2 text-[16px] font-semibold">
+                  {parsedCart?.quantity}
                 </div>
               </div>
               <div className="flex w-full justify-between border-b p-2">
                 <div className="text-[#000000] px-2 text-[14px]">
                   Discount on MRP
                 </div>
-                <div className="text-[#3478ff] px-2 text-[14px]">
+                <div className="text-black px-2 text-[14px]">
                   -₹ {parsedCart?.discount}
                 </div>
               </div>
-              <div className="flex w-full justify-between border-b p-2">
+              {/* <div className="flex w-full justify-between border-b p-2">
                 <div className="text-[#000000] px-2 text-[14px]">
                   Coupon Discount
                 </div>
                 <div className="text-[#3478ff] px-2 text-[14px]">₹ 0</div>
-              </div>
-              <div className="flex w-full justify-between border-b p-2">
+              </div> */}
+              <div className="flex w-full justify-between border-b border-black p-2">
                 <div className="text-[#000000] px-2 text-[14px]">
                   Delivery Charge
                 </div>
-                <div className="text-[#3478ff] px-2 text-[14px]">
-                  ₹ {parsedCart?.delivery ? parsedCart?.delivery : 0}
+                <div className="text-[#4BD58B] px-2 text-[14px]">
+                  {parsedCart?.delivery ? "₹ " + parsedCart?.delivery : "Free"}
                 </div>
               </div>
               <div className="flex w-full justify-between p-2">
                 <div className="text-[#000000] px-2 text-[14px]">
                   Total Amount
                 </div>
-                <div className="text-[#3478ff] px-2 text-[14px]">
+                <div className="text-black px-2 text-[16px] font-semibold">
                   {" "}
                   ₹ {parsedCart?.totalprice}
                 </div>
@@ -95,9 +144,15 @@ const PageContent = () => {
               </div>
             </div>
           </div>
-          <div className="text-[#ffffff] mt-2 p-2 bg-slate-800 rounded-2xl text-[14px]">
+          <button
+            disabled={load}
+            onClick={() => {
+              buynow();
+            }}
+            className="text-[#ffffff] w-[60%]  flex items-center justify-center cursor-pointer hover:bg-slate-700 py-2 mt-4 bg-black rounded-xl text-[14px]"
+          >
             Place Order
-          </div>
+          </button>
         </>
       )}
     </div>

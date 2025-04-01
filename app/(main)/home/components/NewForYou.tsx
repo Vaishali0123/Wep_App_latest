@@ -5,7 +5,7 @@ import { API } from "@/app/utils/helpers";
 import axios from "axios";
 // import { FixedSizeList as List } from "react-window";
 import { useAuthContext } from "@/app/auth/components/auth";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { RiLoaderLine } from "react-icons/ri";
 
 type PostData = PostDataItem[];
 const Page = () => {
@@ -41,7 +41,7 @@ const Page = () => {
         // Load more
         setPostData((prevPosts) => [...prevPosts, ...res?.data?.mergedData]);
         // }
-        console.log(res?.data?.mergedData, "res?.data?.mergedData");
+
         setPage((prevPage) => prevPage + 1); // Increment the page
         setHasMore(res?.data?.mergedData.length > 0);
       }
@@ -74,7 +74,19 @@ const Page = () => {
 
     return () => observer.unobserve(currentRef);
   }, [loading, hasMore]);
-
+  // const trackViewAPI = async () => {
+  //   try {
+  //     const res = axios.post("http://localhost:7002/api/sendanalytics", {
+  //       postId: "65e88e9e182f1707a699aa31",
+  //     });
+  //     console.log(`✅ View tracked for post: `);
+  //   } catch (e) {
+  //     console.error("❌ Error tracking view:", e);
+  //   }
+  // };
+  // useEffect(() => {
+  //   trackViewAPI();
+  // }, []);
   return (
     <>
       {postData?.length > 0 ? (
@@ -89,7 +101,10 @@ const Page = () => {
           />
           {loading && (
             <p className="text-center py-4 text-black flex items-center justify-center">
-              <AiOutlineLoading3Quarters className="animate-spin h-[35px] w-[35px]" />
+              <RiLoaderLine
+                size={30}
+                className="animate-spin w-full flex self-center"
+              />
             </p>
           )}
         </>

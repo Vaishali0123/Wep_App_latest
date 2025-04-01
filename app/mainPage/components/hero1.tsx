@@ -244,7 +244,7 @@ const Hero1: React.FC = () => {
         >
           <Link
             href="../auth/login"
-            className="h-10 sm:h-12 px-4 sm:px-5 gap-2 flex justify-center bold items-center text-black border border-[#1F1F22] hover:text-[#1F1F22] rounded-xl bg-white text-sm sm:text-lg font-normal"
+            className="h-10 sm:h-12 px-4 sm:px-5 gap-2 flex justify-center bold items-center hover:bg-[#cecdcd]  text-black border border-[#1F1F22] hover:text-[#1F1F22] rounded-xl bg-white text-sm sm:text-lg font-normal"
           >
             {/* <PiLaptop /> */}
             Get Started
