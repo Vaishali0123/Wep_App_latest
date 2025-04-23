@@ -2,8 +2,8 @@ import React from "react";
 
 const page = () => {
   return (
-    <div className="w-[90%] mx-[5%] mt-[7%] flex flex-col gap-[50px] ">
-      <div className="flex flex-col gap-6">
+    <div className="w-[90%] mx-[5%]  flex flex-col gap-[50px] ">
+      <div className="flex flex-col gap-6 pt-20">
         <div>Get Started</div>
         <div className=" text-3xl sm:text-5xl md:text-7xl font-bold">
           Get in touch with us. <br />
@@ -50,7 +50,7 @@ const page = () => {
           </div>
         </div>
         <div>
-          <button className="border-none rounded-3xl bg-[#127DF7] px-5 py-3 pp:px-[32px] pp:py-5">
+          <button className="border-none rounded-3xl bg-[#127DF7] text-white px-5 py-3 pp:px-[32px] pp:py-5">
             Leave us a Message &#8594;
           </button>
         </div>

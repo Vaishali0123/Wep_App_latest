@@ -66,10 +66,10 @@ import React from "react";
 const page = () => {
   return (
     <>
-      <div className="flex justify-center items-center select-none px-4 md:px-0">
-        <div className="grid grid-cols-1 w-[85%] my-2 sm:my-6 text-[#FFFFFF99]">
+      <div className="flex  justify-center items-center select-none px-4 md:px-0">
+        <div className="grid pt-16 grid-cols-1 w-[85%] text-[#00000099]">
           <div>
-            <h1 className="sm:text-4xl text-3xl -ml-[3%] font-bold my-5 text-[#FFFFFF]">
+            <h1 className="sm:text-4xl text-3xl -ml-[3%] font-bold my-5 text-[#000000]">
               Return Policy
             </h1>
             <div className="text-[15px] font-medium  pp:text-[18px]">
@@ -77,7 +77,7 @@ const page = () => {
               Read the policy before returning the order.
             </div>
             <div className="text-[15px] pp:text-[18px] ">
-              <h2 className="text-2xl font-semibold py-3 text-[#FFFFFF]">
+              <h2 className="text-2xl font-semibold py-3 text-[#000000]">
                 Timeframe
               </h2>
               {/* There is usually a specific timeframe within which returns are
@@ -87,21 +87,21 @@ const page = () => {
               delivery.
             </div>
             <div className="text-[15px] pp:text-[18px] ">
-              <h2 className="text-2xl font-semibold py-3 text-[#FFFFFF]">
+              <h2 className="text-2xl font-semibold py-3 text-[#000000]">
                 Condition of the Item
               </h2>{" "}
               The item being returned is generally expected to be in its
               original condition, including packaging and any accessories.
             </div>
             <div className="text-[15px] pp:text-[18px] ">
-              <h2 className="text-2xl font-semibold py-3 text-[#FFFFFF]">
+              <h2 className="text-2xl font-semibold py-3 text-[#000000]">
                 Proof of Purchase
               </h2>{" "}
               A valid proof of purchase, such as a receipt or order
               confirmation, is typically required to process a return.
             </div>
             <div className="text-[15px] pp:text-[18px] ">
-              <h2 className="text-2xl font-semibold py-3 text-[#FFFFFF]">
+              <h2 className="text-2xl font-semibold py-3 text-[#000000]">
                 {" "}
                 Refund or Exchange
               </h2>{" "}
@@ -110,7 +110,7 @@ const page = () => {
               else.
             </div>
             <div className="text-[15px] pp:text-[18px] ">
-              <h2 className="text-2xl font-semibold py-3 text-[#FFFFFF]">
+              <h2 className="text-2xl font-semibold py-3 text-[#000000]">
                 Return Method
               </h2>{" "}
               The process for returning an item may vary. Some companies provide
@@ -118,7 +118,7 @@ const page = () => {
               cover return shipping costs.
             </div>
             <div className="text-[15px] pp:text-[18px] ">
-              <h2 className="text-2xl font-semibold py-3 text-[#FFFFFF]">
+              <h2 className="text-2xl font-semibold py-3 text-[#000000]">
                 Exceptions
               </h2>{" "}
               Some items may be non-returnable, especially if they are

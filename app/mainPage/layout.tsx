@@ -1,5 +1,5 @@
 import React from "react";
-import Footer from "../mainPage/components/Footer";
+import Footer from "./components/Footerterms";
 import Header2 from "../mainPage/components/header2";
 function layout({
   children,
@@ -7,7 +7,7 @@ function layout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="bg-[#0d0d0d] h-screen">
+    <div className="bg-[#ffffff] h-screen">
       <Header2 />
       {children}
       <Footer />

@@ -13,8 +13,8 @@ const EmailInput = ({
   sendEmailOtp: (e: React.FormEvent) => Promise<void>;
 }) => {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col px-2 gap-2 items-center ">
+    <div className="flex flex-col w-full gap-6">
+      <div className="flex flex-col w-full gap-1 items-start ">
         <div className="bg-white border rounded-xl text-[14px] p-2 w-full">
           <div className="text-[#6a6a6a]">Email Address</div>
           <input
@@ -25,24 +25,22 @@ const EmailInput = ({
             placeholder="Enter your Email"
           />
         </div>
-        <div className="mt-1 text-[#6a6a6a]">
+        <div className=" text-[14px] pl-1 text-[#6a6a6a]">
           We will send you an OTP on this email
         </div>
       </div>
 
-      <div>
-        <button
-          disabled={loading}
-          onClick={sendEmailOtp}
-          className="bg-black text-white w-full flex justify-center items-center h-12 font-medium rounded-xl"
-        >
-          {loading ? (
-            <RiLoaderLine size={20} className="animate-spin" />
-          ) : (
-            "Continue"
-          )}
-        </button>
-      </div>
+      <button
+        disabled={loading}
+        onClick={sendEmailOtp}
+        className="bg-black text-white w-full flex justify-center items-center h-12 font-medium rounded-2xl"
+      >
+        {loading ? (
+          <RiLoaderLine size={20} className="animate-spin" />
+        ) : (
+          "Continue"
+        )}
+      </button>
     </div>
   );
 };

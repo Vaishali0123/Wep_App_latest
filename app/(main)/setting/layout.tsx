@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import { BsCashCoin } from "react-icons/bs";
 import { CgWebsite } from "react-icons/cg";
@@ -19,20 +19,26 @@ export default function SettingLayout({
   // Logout function: Deletes cookies & redirects to login page
   const handleLogout = () => {
     Cookies.remove("token");
+
     setIsOpen(false);
     router.push("/auth/login"); // Redirect to login page
   };
+  const path = usePathname();
   return (
     <div className="h-full bg-slate-600 flex w-full pn:max-sm:border-none pn:max-sm:w-full">
       <div className="h-full border-r bg-black pn:max-sm:w-full sm:w-[25%] sm:min-w-[400px]">
         <div className="h-[50px] pn:max-sm:hidden w-full bg-white border-b flex justify-between items-center px-2">
-          <div className="font-semibold text-[25px]">Settings</div>
+          <div className="font-semibold text-[20px]">Settings</div>
         </div>
         {/* body  */}
         <div className=" w-full sm:h-[calc(100%-50px)] h-full bg-white overflow-auto sm:p-2 space-y-2">
           <Link
             href={"../setting"}
-            className="hover:bg-slate-50 active:bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
+            className={`${
+              path === "/setting"
+                ? " bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
+                : "hover:bg-slate-50 active:bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
+            }`}
           >
             <RiAccountBoxLine className="w-6 h-6" /> <div>Account</div>
           </Link>
@@ -44,7 +50,11 @@ export default function SettingLayout({
           </Link> */}
           <Link
             href={"../setting/prosite"}
-            className="hover:bg-slate-50 active:bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
+            className={`${
+              path === "/setting/prosite"
+                ? " bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
+                : "hover:bg-slate-50 active:bg-slate-100  rounded-xl flex w-full p-2 items-center gap-2"
+            }`}
           >
             <CgWebsite className="w-6 h-6" /> <div>Analytics</div>
           </Link>
@@ -56,20 +66,32 @@ export default function SettingLayout({
           </Link> */}
           <Link
             href={"../setting/createad"}
-            className="hover:bg-slate-50 active:bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
+            className={`${
+              path === "/setting/createad"
+                ? " bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
+                : "hover:bg-slate-50 active:bg-slate-100  rounded-xl flex w-full p-2 items-center gap-2"
+            }`}
           >
             <RiAdvertisementLine className="w-6 h-6" />{" "}
             <div>Create your ad</div>
           </Link>
           <Link
             href={"../setting"}
-            className="hover:bg-slate-50 active:bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
+            className={`${
+              path === "/setting"
+                ? " bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
+                : "hover:bg-slate-50 active:bg-slate-100  rounded-xl flex w-full p-2 items-center gap-2"
+            }`}
           >
             <BsCashCoin className="w-6 h-6" /> <div>Earn With Us</div>
           </Link>{" "}
           <Link
             href={"../setting/help"}
-            className="hover:bg-slate-50 active:bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
+            className={`${
+              path === "/setting/help"
+                ? " bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
+                : "hover:bg-slate-50 active:bg-slate-100  rounded-xl flex w-full p-2 items-center gap-2"
+            }`}
           >
             <IoIosHelpCircleOutline className="w-6 h-6" /> <div>Contact Us</div>
           </Link>

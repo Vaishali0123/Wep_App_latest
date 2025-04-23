@@ -45,17 +45,6 @@ const Hero1: React.FC = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  // Function to check screen size
-  // const checkScreenSize = () => {
-  //   setIsMobile(window.innerWidth < 768); // Adjust breakpoint as needed
-  // };
-
-  // // Run on mount and resize to check screen size
-  // useEffect(() => {
-  //   checkScreenSize();
-  //   window.addEventListener("resize", checkScreenSize);
-  //   return () => window.removeEventListener("resize", checkScreenSize);
-  // }, []);
 
   // Change text and background image every 5 seconds
   useEffect(() => {

@@ -1,8 +1,11 @@
 "use client";
 import Search from "../(main)/search/page";
 import Link from "next/link";
-import { useState } from "react";
-import { IoSearch, IoSettingsOutline } from "react-icons/io5";
+import {useState } from "react";
+import {
+  IoSearch,
+  IoSettingsOutline,
+} from "react-icons/io5";
 import { LuSearch } from "react-icons/lu";
 // import { useSelector } from "react-redux";
 // import { RootState, store } from "../redux/store";
@@ -62,18 +65,18 @@ export default function MainLayout({
           className={`${
             chatheader === true || path.startsWith("/home/insideCommunity")
               ? "pn:max-md:hidden"
-              : "flex pn:max-sm:h-[50px]"
+              : "flex  pn:max-sm:z-40 pn:max-sm:fixed pn:max-sm:bottom-0 pn:max-sm:w-full pn:max-sm:h-[50px]"
           }`}
         >
-          <div className="h-full pn:max-sm:flex-row w-[60px] z-10 bg-white border-r cursor-pointer border-dashed flex flex-col items-center pn:max-sm:w-full pn:max-sm:h-[50px] py-1">
+          <div className="h-full pn:max-sm:flex-row w-[60px] z-40 bg-white border-r cursor-pointer border-dashed flex flex-col items-center pn:max-sm:w-full pn:max-sm:h-[50px] py-1">
             <Link
               href={{
-                pathname: "../../../prosite",
-                query: {
-                  id: data?.id,
-                },
+                pathname: `../../../prosite/${data?.username}`,
+                // query: {
+                //   id: data?.id,
+                // },
               }}
-              className="w-[40px] h-[40px] rounded-[16px] flex items-center justify-center pn:max-sm:hidden"
+              className="w-[40px] hover:opacity-[40%] cursor-pointer h-[40px] rounded-[16px] flex items-center justify-center pn:max-sm:hidden"
             >
               <img
                 src={data?.dp} // Fallback to a default profile image

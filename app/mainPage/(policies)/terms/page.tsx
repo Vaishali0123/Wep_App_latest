@@ -116,8 +116,8 @@ const page = () => {
   return (
     <>
       {/* <SupportHeader /> */}
-      <div className="flex justify-center items-center px-4 md:px-0">
-        <div className="grid grid-cols-1 w-[85%] sm:my-6 text-[#000]">
+      <div className="flex justify-center items-center bg-white pt-10 px-4 md:px-0">
+        <div className="grid grid-cols-1 w-[85%] sm:my-6  text-[#000]">
           <h1 className="text-2xl ss:text-3xl font-bold py-5 -ml-[3%] ">
             Terms & Conditions
           </h1>

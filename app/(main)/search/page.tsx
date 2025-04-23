@@ -4,6 +4,8 @@ import { API } from "@/app/utils/helpers";
 import axios from "axios";
 import Link from "next/link";
 import React, { useCallback, useState } from "react";
+import { FaRegShareSquare } from "react-icons/fa";
+import { FaHandsClapping } from "react-icons/fa6";
 import { RiLoaderLine } from "react-icons/ri";
 
 interface Community {
@@ -44,7 +46,7 @@ interface Prosite {
   p?: {
     fullname: string;
     username: string;
-    _id: string;
+    _id?: string;
   };
 }
 
@@ -164,6 +166,50 @@ const Page = () => {
     },
     [active, API, id]
   );
+  // const getDummyAnalyticsData = () => {
+  //   const today = new Date();
+  //   const analytics = [];
+
+  //   for (let i = 6; i >= 0; i--) {
+  //     const date = new Date(today);
+  //     date.setDate(today.getDate() - i); // Previous 7 days
+
+  //     analytics.push({
+  //       date: date.toISOString().slice(0, 10), // YYYY-MM-DD
+  //       visitors: Math.floor(Math.random() * 20) + 5, // Random between 5-25
+  //       addedtocart: Math.floor(Math.random() * 10),
+  //       totalorders: Math.floor(Math.random() * 5),
+  //       cancelledorders: Math.floor(Math.random() * 3),
+  //     });
+  //   }
+
+  //   return analytics;
+  // };
+  // const updateStoreAnlalyitcs = async (userId: string) => {
+  //   try {
+  //     const customAnalyticsData = getDummyAnalyticsData();
+
+  //     const res = await axios.post(`${API}/updateStoreAnalytics`, {
+  //       userId: userId,
+  //       analytics: customAnalyticsData, // sending dummy data
+  //     });
+
+  //     console.log(res?.data);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
+  const updateStoreAnlalyitcs = async (userId: string) => {
+    try {
+      const res = await axios.post(`${API}/updateStoreAnalytics`, {
+        userId: userId,
+      });
+      console.log(res?.data);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   return (
     <div className="bg-white w-full  h-full">
       <div className="text-[20px] font-semibold px-2 flex items-center h-[50px] bg-whtie border-b bg-white">
@@ -232,11 +278,16 @@ const Page = () => {
         ) : (
           data.map((d: Prosite, i) => (
             <Link
+              onClick={() => {
+                if (d?.p?._id) {
+                  updateStoreAnlalyitcs(d?.p?._id);
+                }
+              }}
               href={{
-                pathname: "../../../prosite",
-                query: {
-                  id: d?.p?._id,
-                },
+                pathname: `../../../prosite/${d?.p?.username}`,
+                // query: {
+                //   id: d?.p?._id,
+                // },
               }}
               key={i}
               className="flex h-[60px] items-center border-b justify-between hover:bg-slate-50 active:bg-slate-100 bg-white px-2 gap-2"
@@ -246,7 +297,7 @@ const Page = () => {
                   <img
                     src={d?.dps}
                     alt="dp"
-                    className="w-[100%] h-[100%] object-contain rounded-2xl"
+                    className="w-[100%] h-[100%] object-cover rounded-2xl"
                   />
                 </div>
                 <div className="text-[#171717]">
@@ -286,7 +337,7 @@ const Page = () => {
                 <div className="h-[40px] w-[40px] border flex items-center justify-center rounded-2xl">
                   <img
                     src={d?.dps}
-                    className="w-[100%] h-[100%] object-contain rounded-2xl"
+                    className="w-[100%] h-[100%] object-cover rounded-2xl"
                   />
                 </div>
                 <div className="text-[#171717]">
@@ -307,7 +358,11 @@ const Page = () => {
       </div>
       {/* Posts Data */}
       <div
-        className={`${active === "posts" ? "h-[calc(100%-150px)] " : "hidden"}`}
+        className={`${
+          active === "posts"
+            ? "h-[calc(100%-150px)] overflow-y-scroll"
+            : "hidden"
+        }`}
       >
         {load === "load" ? (
           <RiLoaderLine
@@ -318,28 +373,105 @@ const Page = () => {
           data.map((d: Community, i) => (
             <div
               key={i}
-              className="flex h-[60px] items-center border-b justify-between hover:bg-slate-50 active:bg-slate-100 bg-white px-2 gap-2"
+              className="flex flex-col select-none cursor-pointer border-b py-2 hover:bg-slate-50 active:bg-slate-100 bg-white px-2 gap-2"
             >
-              <div className="flex items-center gap-2">
-                <div className="h-[50px] w-[50px] border flex items-center justify-center rounded-sm">
-                  <img
-                    src={d?.community?.dp}
-                    alt="post"
-                    className="w-[100%] h-[100%] object-cover rounded-2xl"
-                  />
-                </div>
-                <div className="text-[#171717]">
-                  <div className="text-[14px] font-semibold">
-                    {d?.community?.communityName}
+              <div className="h-[50px] w-full flex  rounded-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-[40px] h-[40px] rounded-2xl bg-slate-50 border flex items-center justify-center">
+                    <img
+                      src={d?.community?.dp}
+                      alt="post"
+                      className="w-[100%] h-[100%] object-cover rounded-2xl"
+                    />
                   </div>
-                  <div className="text-[12px] font-medium">
-                    {" "}
-                    {d?.sender?.fullname}
+                  <div className="text-[#171717]">
+                    <div className="text-[14px] font-semibold">
+                      {d?.community?.communityName}
+                    </div>
+                    <div className="text-[12px] font-medium">
+                      {" "}
+                      {d?.sender?.fullname}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="  hover:bg-slate-100 text-[12px] p-1 px-2 rounded-2xl">
-                x
+              <div className="bg-slate-50 p-1 rounded-2xl">
+                <div className="w-full h-[280px] rounded-2xl bg-slate-500 flex items-center justify-center "></div>
+                {/* title  */}
+                <div className=" text-ellipsis px-1  truncate overflow-hidden">
+                  <div className="text-[14px]">y8yiuyiyu</div>
+                  <div className=" text-ellipsis px-2 pt-2 truncate overflow-hidden">
+                    fyfyfytftyf
+                  </div>
+                </div>
+              </div>
+              {/* Member section */}
+              <div className="w-full h-full flex justify-between items-center">
+                <div>
+                  <div className="w-full rounded-2xl items-center flex">
+                    <div className="h-[25px] w-[25px] bg-slate-600 rounded-[10px]"></div>
+                    <div className="h-[25px] w-[25px] bg-slate-500 -ml-4 rounded-[10px]"></div>
+                    <div className="h-[25px] w-[25px] bg-slate-400 -ml-4 rounded-[10px]"></div>
+                    <div className="h-[25px] w-[25px] bg-slate-300 -ml-4 rounded-[10px]"></div>
+                    <div className="ml-1 text-[12px]">20 members</div>
+                  </div>
+                </div>
+                <div className="flex  items-center gap-2">
+                  <div
+                    // onClick={() => handleLike(d?.posts?._id)}
+                    className={`flex px-2 py-1 border rounded-xl items-center gap-2
+                             hover:bg-slate-100 active:bg-slate-50 bg-slate-50
+                            `}
+                  >
+                    <FaHandsClapping
+                    // className={`${
+                    // likedPosts[d?.posts?._id]
+                    // ? "text-yellow-500"
+                    // : "text-gray-500"
+                    // }`}
+                    />
+                    <div>45</div>
+                  </div>
+
+                  <div
+                    // onClick={() => setShowPopup(true)}
+                    className="p-2 border rounded-xl flex items-center justify-center hover:bg-slate-100 active:bg-slate-50 bg-slate-50 "
+                  >
+                    <FaRegShareSquare />
+                  </div>
+                  {/* Popup */}
+                  {/* {showPopup && (
+                                      <div
+                                        className="fixed inset-0 flex items-center justify-center z-50"
+                                        style={{
+                                          backdropFilter: "blur(8px)", // Background blur effect
+                                          WebkitBackdropFilter: "blur(8px)",
+                                        }}
+                                      >
+                                        <div className="bg-white p-4 rounded-xl shadow-md w-[300px] text-center">
+                                          <h2 className="text-lg font-semibold mb-2">
+                                            Copy Link
+                                          </h2>
+                                          <p className="text-sm mb-4">
+                                            Copy the link to share this post with others.
+                                          </p>
+                                          <button
+                                            //@ts-expect-error server
+                                            // onClick={() => handleCopyLink(d?.posts?._id)}
+                                            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                                          >
+                                            Copy Link
+                                          </button>
+                                          <button
+                                            // onClick={() => setShowPopup(false)}
+                                            className="ml-2 bg-gray-300 px-4 py-2 rounded-lg hover:bg-gray-400"
+                                          >
+                                            Cancel
+                                          </button>
+                                        </div>
+                                      </div>
+                                    )} */}
+                </div>
               </div>
             </div>
           ))

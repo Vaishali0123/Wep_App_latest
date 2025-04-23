@@ -1,6 +1,6 @@
 import { API } from "@/app/utils/helpers";
 import axios from "axios";
-import { PrositeData } from "../page";
+import { PrositeData } from "../[username]/page";
 export const getProsite = async (
   id: string | null,
   setPrositeData: (data: PrositeData | null) => void,

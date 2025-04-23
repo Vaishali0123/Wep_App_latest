@@ -66,7 +66,7 @@ const PageContent = () => {
       const res = await axios.post(`${API}/placeorder/${data?.id}`, {
         productId: productId,
         action: "add",
-        quantity: 1,
+        quantity: quantity,
         paymentMode: "Cash",
         finalprice: price,
       });
@@ -385,7 +385,7 @@ const PageContent = () => {
                   buynow(productData?._id, 1, productData?.price);
                 }
               }}
-              className="border-2 border-dashed flex items-center justify-center w-full p-2 rounded-2xl"
+              className="border-2 cursor-pointer border-dashed flex items-center justify-center w-full p-2 rounded-2xl"
             >
               Buy now
             </button>

@@ -114,7 +114,7 @@ const Page = () => {
     <>
       <div className="flex flex-col mt-5 justify-center px-[5%] gap-4">
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-semibold py-2">
+          <h1 className="text-3xl pt-20 font-semibold py-2">
             Account Deletion Request
           </h1>
 

@@ -94,18 +94,19 @@ export default function UserLayout({ children }: UserLayoutProps) {
         {children}
         <div className="flex absolute pn:max-sm:hidden bottom-0 sm:bottom-2 w-[100%] flex-wrap md:justify-end justify-start items-center  text-[#414141] gap-4 text-[12px] select-none">
           <div className="flex sm:bottom-3 px-6 pn:max-sm:w-full flex-wrap justify-center items-center  text-[#414141] gap-4 text-[12px] select-none">
-            <Link href={"../terms"}>T&C</Link>
-            <Link href={"../privacy"}>Privacy</Link>
-            <Link href={"../contact"}>Contact Us</Link>
-            <Link href={"/about"}>About</Link>
-            <Link href={"/requestdata"}>Request Data</Link>
-            <Link href={"/deleterequest"}>Delete Request</Link>
-            <Link href={"../shipping"}>Shipping</Link>
+            <Link href={"../mainPage/terms"}>T&C</Link>
+            <Link href={"../mainPage/privacy"}>Privacy</Link>
+            <Link href={"../mainPage/contact"}>Contact Us</Link>
+            <Link href={"../mainPage/about"}>About</Link>
+            <Link href={"../mainPage/refund"}>Refund</Link>
+            <Link href={"../mainPage/requestdata"}>Request Data</Link>
+            <Link href={"../mainPage/deleterequest"}>Delete Request</Link>
+            <Link href={"../mainPage/shipping"}>Shipping</Link>
             <div title="Coming soon ..." className="cursor-pointer">
               Request API Access
             </div>
-            <Link href={"../cancellation"}>Cancellation</Link>
-            <Link href={"../return"}>Return Policy</Link>
+            <Link href={"../mainPage/cancellation"}>Cancellation</Link>
+            <Link href={"../mainPage/return"}>Return Policy</Link>
           </div>
         </div>
       </div>

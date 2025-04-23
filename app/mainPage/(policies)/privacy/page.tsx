@@ -562,7 +562,7 @@ import React from "react";
 const page = () => {
   return (
     <>
-      <div className="flex justify-center items-center w-full text-[#000] ">
+      <div className="flex justify-center items-center w-full bg-white pt-10 text-[#000] ">
         <div className="grid grid-cols-1 my-2 sm:my-6 w-[90%]">
           <div>
             <h1 className="sm:text-3xl text-2xl font-bold my-5  flex justify-center underline">

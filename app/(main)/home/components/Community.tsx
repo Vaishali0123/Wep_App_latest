@@ -1,6 +1,6 @@
 import { API } from "@/app/utils/helpers";
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Post, { PostDataItem } from "./Post";
 import { useAuthContext } from "@/app/auth/components/auth";
 import Link from "next/link";
@@ -8,7 +8,7 @@ import { RiLoaderLine } from "react-icons/ri";
 
 type PostData = PostDataItem[];
 
-const Community = () => {
+const MemoCommunity = () => {
   const [postData, setPostData] = useState<Array<PostData>>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const { data } = useAuthContext();
@@ -20,10 +20,11 @@ const Community = () => {
 
   // const observer = useRef<IntersectionObserver | null>(null);
 
-  const getJoinedCommunities = async () => {
+  const getJoinedCommunities = useCallback(async () => {
     if (!userId || !hasMore) return;
     setLoading(true);
     try {
+      console.log("hi");
       const res = await axios.get(`${API}/getJoinedCommunities/${userId}`, {
         params: { page: page },
       });
@@ -52,7 +53,7 @@ const Community = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, page, hasMore]);
   useEffect(() => {
     if (userId) {
       getJoinedCommunities();
@@ -147,5 +148,5 @@ const Community = () => {
     </>
   );
 };
-
+const Community = React.memo(MemoCommunity);
 export default Community;

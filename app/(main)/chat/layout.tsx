@@ -16,6 +16,20 @@ export default function HomeLayout({
   const chatheader = useSelector(
     (state: RootState) => state.comFeed.chatheader
   );
+  // const [requestData, setRequestData] = useState("");
+
+  // const request = async () => {
+  //   try {
+  //     const res = await axios.get(`${API}/getRequest/${id}`);
+  //     setRequestData(res?.data?.data);
+  //     console.log(res?.data?.data);
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // };
+  // useEffect(() => {
+  //   request();
+  // }, []);
 
   return (
     <div className="h-full bg-slate-600 flex w-full pn:max-sm:border-none pn:max-sm:w-full">

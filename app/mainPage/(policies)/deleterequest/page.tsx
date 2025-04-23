@@ -12,8 +12,8 @@ const Page = () => {
   };
   return (
     <>
-      <div className="flex flex-col mt-5 w-[85%] justify-center px-[5%]  ">
-        <h1 className="text-3xl font-semibold  py-2">Data Deletion Request</h1>
+      <div className="flex flex-col  w-[85%] justify-center px-[5%]  ">
+        <h1 className="text-3xl font-semibold  pt-20 py-2">Data Deletion Request</h1>
         <div className="flex flex-col gap-4 pt-2">
           <div>
             Thank you for choosing Grovyo. If you wish to request the deletion

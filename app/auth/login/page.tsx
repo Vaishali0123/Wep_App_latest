@@ -201,7 +201,7 @@ const Page = () => {
   };
 
   return (
-    <div className=" inset-0 w-full z-50 h-screen flex justify-center items-center ">
+    <div className=" inset-0 w-full z-50 h-screen pn:max-sm:-top-[100px] pn:max-sm:fixed flex justify-center items-center ">
       <Toaster />
       <div className="sm:w-[50%] flex flex-col p-2 space-y-2 justify-center pn:max-sm:items-center">
         {/* text  */}
@@ -213,7 +213,7 @@ const Page = () => {
         </div>
         <div className="text-[40px] font-extrabold text-[#2c2c2c]">Login</div>
         {!showOtp && (
-          <div className="flex w-full">
+          <div className="flex text-center pn:max-sm:justify-center w-full">
             <span className=" text-[16px] font-medium text-[#9095A0] bg-transparent ">
               Don&apos;t have an account?
               <span className="text-blue-500">
@@ -269,7 +269,7 @@ const Page = () => {
         <div
           className={`${
             change === 1
-              ? "flex justify-start flex-col items-start  py-4"
+              ? "flex justify-start flex-col items-start w-full py-4"
               : "hidden"
           } `}
         >
@@ -285,7 +285,7 @@ const Page = () => {
           ) : (
             <MobileInput
               sendPhoneOtp={sendPhoneOtp}
-              // sendPhoneOtp={loginWithPhoneNumber}/
+              // sendPhoneOtp={loginWithPhoneNumber}
               number={phoneNumber}
               loading={loading}
               setPhoneNumber={setPhoneNumber}
@@ -296,7 +296,7 @@ const Page = () => {
         <div
           className={`${
             change === 2
-              ? "flex justify-start flex-col items-start  py-4"
+              ? "flex justify-start flex-col items-start w-full py-4"
               : "hidden"
           } `}
         >

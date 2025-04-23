@@ -11,7 +11,7 @@ import Subscription from "./Subscription/Subscription";
 import Trackorder from "./trackOrder/Trackorder";
 import Link from "next/link";
 import axios from "axios";
-import { API } from "@/app/utils/helpers";
+import { API, errorHandler } from "@/app/utils/helpers";
 import { useAuthContext } from "@/app/auth/components/auth";
 
 // import Header from "../components/header";
@@ -69,6 +69,7 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
   const MemorizedCart = memo(Cart);
   const MemorizedTrackorder = memo(Trackorder);
   const MemorizedSubscription = memo(Subscription);
+  const [addressData, setAddressData] = useState([]);
   const [cart, setCart] = useState<{
     data: Array<CartItem>;
     totalprice: number;
@@ -77,6 +78,7 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
   const [subscriptions, setSubscriptions] = useState<Array<SubscriptionItem>>(
     []
   );
+  const [phone, setPhone] = useState("");
 
   const fetchCart = async () => {
     try {
@@ -84,6 +86,8 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
 
       if (res?.data?.success) {
         setCart(res?.data?.data);
+        setAddressData(res?.data?.address);
+        setPhone(res?.data?.phone);
         // setCart({ data: res?.data?.data, totalprice: res?.data?.totalprice });
       }
     } catch (e: unknown) {
@@ -93,11 +97,12 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(`${API}/getOrder/${userId}`);
+      console.log(res?.data?.data, "res?.data?.data");
       if (res?.data?.success) {
         setOrders(res?.data?.data);
       }
     } catch (e: unknown) {
-      console.log(e);
+      errorHandler(e);
     }
   };
   const fetchSubscriptions = async () => {
@@ -116,18 +121,7 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
       fetchCart();
     }
   }, [userId]);
-  // console.log(cart?.product, "hi");
-
-  //   const myCookie = Cookies.get("excktn");
   const path = usePathname();
-
-  //   // State selectors with proper typings
-  //   const loading = useSelector((state: any) => state.createPostSlice.isLoading);
-  //   const comid = useSelector((state: any) => state.createPostSlice.comid);
-  //   const progress = useSelector((state: any) => state.createPostSlice.progress);
-  //   const isLoading = useSelector((state: any) => state.userData.isLoading);
-
-  //   console.log(comid, "comid");
 
   return (
     <>
@@ -142,7 +136,10 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
             <Link
               href={{
                 pathname: "/library/cart",
-                query: { cart: JSON.stringify(cart) }, // Pass the cart as a query parameter
+                query: {
+                  cart: JSON.stringify(cart),
+                  // addressData: JSON.stringify(addressData),
+                }, // Pass the cart as a query parameter
               }}
               onClick={() => setOpen(1)}
               className={`p-1 px-4 border rounded-xl text-[14px] font-medium ${
@@ -179,7 +176,11 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
             className="bg-white space-y-2 pn:max-sm:w-full w-[400px]  min-w-[25%] overflow-y-auto dark:bg-[#ffffff]"
           >
             {open === 1 ? (
-              <MemorizedCart cart={cart} />
+              <MemorizedCart
+                cart={cart}
+                addressData={addressData}
+                phone={phone}
+              />
             ) : open === 2 ? (
               <MemorizedTrackorder orders={orders} />
             ) : open === 3 ? (

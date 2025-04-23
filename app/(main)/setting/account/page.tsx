@@ -150,7 +150,7 @@ const Page = () => {
               <img
                 src={profilePic || data?.data?.profilepic}
                 alt="Profile"
-                className="w-full h-full object-contain rounded-[30px] "
+                className="w-full h-full object-cover rounded-[30px] "
               />
             </div>
             <label

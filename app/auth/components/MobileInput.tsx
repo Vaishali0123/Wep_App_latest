@@ -12,8 +12,8 @@ const MobileInput = ({
   sendPhoneOtp: (e: React.FormEvent) => Promise<void>;
 }) => {
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col px-2 gap-2 items-center">
+    <div className="flex flex-col w-full gap-6">
+      <div className="flex flex-col  gap-1 items-start ">
         <div className="bg-white border rounded-xl text-[14px] p-2 w-full">
           <div className="text-[#6a6a6a] text-[14px]">Phone no.</div>
           <div className="flex">
@@ -27,7 +27,7 @@ const MobileInput = ({
             />
           </div>
         </div>
-        <div className="mt-1 text-[#6a6a6a]">
+        <div className="pl-1 text-[14px] text-[#6a6a6a]">
           We will send you an OTP on this number
         </div>
       </div>
@@ -36,7 +36,7 @@ const MobileInput = ({
         <button
           disabled={loading}
           onClick={sendPhoneOtp}
-          className="bg-black text-white w-full flex justify-center items-center h-12 font-medium rounded-xl"
+          className="bg-black text-white w-full flex justify-center items-center h-12 font-medium rounded-2xl"
         >
           {loading ? (
             <RiLoaderLine size={20} className="animate-spin" />

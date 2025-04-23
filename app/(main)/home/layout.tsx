@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import NewForYou from "./components/NewForYou";
 import Community from "./components/Community";
 import Link from "next/link";
@@ -12,19 +12,41 @@ export default function HomeLayout({
   children: React.ReactNode;
 }>) {
   const [switcher, setSwitcher] = useState<number>(1);
+  // const [showHeader, setShowHeader] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+
+      // if (currentScrollY > lastScrollY) {
+      //   // scrolling down
+      //   setShowHeader(false);
+      // } else {
+      //   // scrolling up
+      //   setShowHeader(true);
+      // }
+
+      setLastScrollY(currentScrollY);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
   const path = usePathname();
   return (
-    <div className="h-full border-r flex w-full  pn:max-sm:border-none pn:max-sm:w-full">
+    <div className="h-full border-r fixed flex w-full   pn:max-sm:border-none pn:max-sm:w-full">
       <div
         className={` ${
           path === "/home/insideCommunity"
             ? "pn:max-sm:hidden"
-            : "h-full border-r pn:max-sm:w-full sm:w-[25%] sm:min-w-[400px]"
+            : "h-full border-r pn:max-sm:w-full sm:min-w-[400px]"
         } `}
       >
         {/* switcher  */}
         <div className="grid grid-cols-1 h-[50px] relative p-2 rounded-xl w-fit">
-          <div className="flex rounded-xl items-center h-[90%] text-[#303030] select-none text-[14px]">
+          <div className="flex rounded-xl items-center h-fit text-[#303030] select-none text-[14px]">
             <Link
               href={"../home"}
               onClick={() => {
@@ -58,7 +80,7 @@ export default function HomeLayout({
         {/* body  */}
         <div
           style={{ height: "calc(100% - 50px)" }}
-          className=" pn:max-sm:w-full w-[400px] min-w-[25%] border-r bg-white overflow-auto"
+          className=" pn:max-sm:w-full w-[400px] min-w-[25%] border-r  overflow-auto"
         >
           {switcher == 1 ? (
             <>
@@ -73,10 +95,8 @@ export default function HomeLayout({
       </div>
       {/* main  */}
       <div
-        className={` ${
-          path === "/home/insideCommunity"
-            ? "w-full bg-white h-screen"
-            : "pn:max-sm:hidden"
+        className={`sm:w-full ${
+          path === "/home/insideCommunity" ? " h-screen" : "pn:max-sm:hidden"
         } `}
       >
         {children}

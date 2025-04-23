@@ -1,60 +1,79 @@
 "use client";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useState } from "react";
 import Emptycart from "../../../assets/emptycart.png";
 import axios from "axios";
-import { API } from "@/app/utils/helpers";
+import { API, errorHandler } from "@/app/utils/helpers";
 import { useAuthContext } from "@/app/auth/components/auth";
 import toast, { Toaster } from "react-hot-toast";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/redux/store";
 
 const PageContent = () => {
   const searchParams = useSearchParams();
-  const cart = searchParams.get("cart"); //
-  const parsedCart = cart ? JSON.parse(cart) : null;
+  const router = useRouter();
+  // const cart = searchParams.get("cart");
+  const raw = searchParams.get("cart");
+
+  const parsedCart = JSON.parse(raw as string);
+  console.log(raw, "raw", typeof raw);
+  console.log(parsedCart, "parsedCart", typeof parsedCart);
+  const addressId = useSelector(
+    (state: RootState) => state.user.userData.address._id
+  );
+  // const parsedCart = cart ? JSON.parse(cart) : null;
   const [loading, setLoading] = useState(true);
 
   const { data } = useAuthContext();
   const [load, setLoad] = useState(false);
-
   const buynow = async () => {
     try {
       setLoad(true);
 
       if (!data?.id) {
         toast.error("User not found! Please login or refresh the page.");
+        setLoad(false);
         return;
       }
+      if (!addressId) {
+        toast.error("Please select or add an address");
+        setLoad(false);
 
-      if (!parsedCart?.data?.length) {
+        return;
+      }
+      if (parsedCart?.data?.length === 0) {
         toast.error("Cart is empty!");
+        setLoad(false);
+
         return;
       }
 
       const res = await axios.post(`${API}/placeorder/${data?.id}`, {
-        cartId: parsedCart._id, // Send cart ID to identify the cart
+        cartId: parsedCart._id,
         paymentMode: "Cash",
         finalprice: parsedCart.totalprice,
         discount: parsedCart.discount,
+        addressId: addressId,
       });
 
       if (res?.data?.success) {
         toast.success("Order placed successfully!");
+        router.refresh();
       } else {
         toast.error("Something went wrong! Please try again later.");
       }
     } catch (e) {
-      toast.error("Something went wrong");
-      console.log(e);
+      errorHandler(e);
     }
     setLoad(false);
   };
 
   useEffect(() => {
-    if (cart) {
+    if (parsedCart) {
       setLoading(false);
     }
-  }, [cart]);
+  }, [parsedCart]);
 
   return (
     <div className="bg-white h-full w-full  flex flex-col items-center justify-center">
@@ -149,7 +168,7 @@ const PageContent = () => {
             onClick={() => {
               buynow();
             }}
-            className="text-[#ffffff] w-[60%]  flex items-center justify-center cursor-pointer hover:bg-slate-700 py-2 mt-4 bg-black rounded-xl text-[14px]"
+            className="text-[#ffffff] w-[60%]  flex items-center justify-center cursor-pointer hover:bg-slate-700 active:bg-slate-800 py-2 mt-4 bg-black rounded-xl text-[14px]"
           >
             Place Order
           </button>

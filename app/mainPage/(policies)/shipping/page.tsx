@@ -113,8 +113,8 @@ const page = () => {
     <>
       {/* <SupportHeader/> */}
       <div className="flex justify-center items-center select-none px-4 md:px-0">
-        <div className="grid grid-cols-1 w-[85%] my-2 sm:my-6 text-[#FFFFFF99]">
-          <h1 className="text-3xl font-bold py-3 -ml-[3%] text-[#FFFFFF]">
+        <div className="grid grid-cols-1 w-[85%] my-2 sm:my-6 text-[#000]">
+          <h1 className="text-3xl pt-20 font-bold py-3 -ml-[3%] text-[#000]">
             Shipping & Delivery Policy
           </h1>
           <div className="text-[15px] mt-3 pp:text-[18px] ">
@@ -129,7 +129,7 @@ const page = () => {
             We are a multi-brand social commerce platform offering a diverse
             range of products.
           </div>
-          <h1 className="text-xl font-semibold py-4 sm:py-5 text-[#FFFFFF]">
+          <h1 className="text-xl font-semibold py-4 sm:py-5 text-[#000]">
             Order Processing and Fulfillment
           </h1>
           <div className="text-[15px] pp:text-[18px] ">
@@ -148,7 +148,7 @@ const page = () => {
             information (if applicable) to monitor the delivery status of your
             order.
           </div>
-          <h1 className="text-xl font-semibold py-4 sm:py-5 text-[#FFFFFF]">
+          <h1 className="text-xl font-semibold py-4 sm:py-5 text-[#000]">
             Shipping Methods and Costs
           </h1>
           <div className="text-[15px] pp:text-[18px] ">
@@ -161,7 +161,7 @@ const page = () => {
             shipping method and the destination address. The shipping costs will
             be clearly displayed before you finalize your order.
           </div>
-          <h1 className="text-xl font-semibold py-4 sm:py-5 text-[#FFFFFF]">
+          <h1 className="text-xl font-semibold py-4 sm:py-5 text-[#000]">
             Delivery Time
           </h1>
           <div className="text-[15px] pp:text-[18px] ">
@@ -180,7 +180,7 @@ const page = () => {
             times, we are not responsible for any delays caused by third-party
             shipping carriers or other external factors.
           </div>
-          <h1 className="text-xl font-semibold py-4 sm:py-5 text-[#FFFFFF]">
+          <h1 className="text-xl font-semibold py-4 sm:py-5 text-[#000]">
             International Shipping
           </h1>
           <div className="text-[15px] pp:text-[18px] ">
@@ -194,7 +194,7 @@ const page = () => {
             delivery time of international orders. We are not responsible for
             any customs-related delays.
           </div>
-          <h1 className="text-xl font-semibold py-4 sm:py-5 text-[#FFFFFF]">
+          <h1 className="text-xl font-semibold py-4 sm:py-5 text-[#000]">
             Order Tracking
           </h1>
           <div className="text-[15px] pp:text-[18px] ">
@@ -207,7 +207,7 @@ const page = () => {
             time to reflect accurately, and tracking information may not be
             available immediately after your order is shipped.
           </div>
-          <h1 className="text-xl font-semibold py-4 sm:py-5 text-[#FFFFFF]">
+          <h1 className="text-xl font-semibold py-4 sm:py-5 text-[#000]">
             Contact Us
           </h1>
           <div className="text-[15px] pp:text-[18px] ">

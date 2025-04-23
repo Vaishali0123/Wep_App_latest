@@ -1,29 +1,42 @@
+import { Address } from "@/app/(main)/library/cart/Cart";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserCreationState {
-  number: string;
-  fullname: string;
-  email: string;
-  username: string;
-  dob: string;
-  bio: string;
-  gender: string;
-  image: File | null;
-  canStay: boolean;
+  // number: string;
+  // fullname: string;
+  // email: string;
+  // username: string;
+  // dob: string;
+  // bio: string;
+  // gender: string;
+  // image: File | null;
+  // canStay: boolean;
+  address: Address;
 }
 
 // Define the initial state using that type
 const initialState: { userData: UserCreationState } = {
   userData: {
-    number: "7521847004",
-    fullname: "Ayush Dixit",
-    email: "fsayush100@gmail.com",
-    username: "ayushdixit23",
-    dob: "",
-    bio: "Aise hi kuch bhi",
-    gender: "Male",
-    image: null,
-    canStay: false,
+    // number: "7521847004",
+    // fullname: "Dev",
+    // email: "dev0@gmail.com",
+    // username: "ayushdixit23",
+    // dob: "",
+    // bio: "..",
+    // gender: "Male",
+    // image: null,
+    // canStay: false,
+    address: {
+      _id: "",
+      houseNo: "",
+      streetAddress: "",
+      landmark: "",
+      pincode: "",
+      city: "",
+      state: "",
+      phone: "",
+      addressType: "",
+    },
   },
 };
 
