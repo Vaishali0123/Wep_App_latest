@@ -7,20 +7,23 @@ import Trackord from "../../../assets/trackord.png";
 import Link from "next/link";
 
 type Order = {
+  timing: string;
+  currentStatus?: string;
   data: {
     currentStatus: string;
     productId: {
       images: { content: string }[];
       name: string;
     };
-    seller: { username: string };
+
+    seller: { username: string; fullname: string };
   }[];
   totalamount: number;
 };
 
 const Trackorder = ({ orders }: { orders: Order[] }) => {
   return (
-    <div className="h-[100%] bg-green-300 space-y-2 overflow-y-auto dark:bg-[#ffffff]">
+    <div className="h-[100%] bg-white space-y-2 overflow-y-auto dark:bg-[#ffffff]">
       {/*-----------------tarck order box---------------*/}
       {/* /* arriving  */}
       {orders?.length > 0 ? (
@@ -30,25 +33,34 @@ const Trackorder = ({ orders }: { orders: Order[] }) => {
               <div key={index} className=" w-full p-2 border-b ">
                 <div className="h-full p-2 border bg-white w-full  rounded-3xl ">
                   <div className="flex pb-2 items-center border-b justify-between">
-                    <div className="text-[14px] font-medium flex text-[#82DBF7] items-center gap-2">
-                      <CgTimelapse /> Estimated arrival by tomorrow
+                    <div className="text-[12px] font-medium flex text-[#518a9c] items-center gap-2">
+                      <CgTimelapse /> {item?.timing}
                     </div>
-                    <div className="text-[10px] font-medium p-2 text-[#000] bg-[#82DBF7] rounded-xl">
-                      {item?.data[0]?.currentStatus === "success" ||
-                      item?.data[0]?.currentStatus === "pending" ||
-                      item?.data[0]?.currentStatus === "processing"
+                    <div
+                      className={`text-[10px] font-medium p-2 text-[#000] ${
+                        item?.currentStatus === "pending" ||
+                        item?.currentStatus === "processing"
+                          ? "bg-green-400"
+                          : item?.currentStatus === "cancelled" ||
+                            item?.currentStatus === "failed"
+                          ? "bg-red-500"
+                          : "bg-green-500"
+                      } bg-[#82DBF7] rounded-xl`}
+                    >
+                      {item?.currentStatus === "pending" ||
+                      item?.currentStatus === "processing"
                         ? "Arriving"
-                        : item?.data[0]?.currentStatus === "cancelled" ||
-                          item?.data[0]?.currentStatus === "failed"
+                        : item?.currentStatus === "cancelled" ||
+                          item?.currentStatus === "failed"
                         ? "Cancelled"
-                        : "Returned"}
+                        : "Arrived"}
                     </div>
                   </div>
                   <div className="flex py-2 items-center gap-2">
-                    <div className="h-[60px] w-[60px]  border flex items-center justify-center rounded-lg">
+                    <div className="h-[60px] w-[60px]  border flex items-center justify-center rounded-xl">
                       <img
                         src={item?.data[0]?.productId?.images[0]?.content}
-                        className="w-[100%] h-[100%] rounded-lg object-cover"
+                        className="w-[100%] h-[100%] rounded-xl object-cover"
                       />
                     </div>
                     <div className="text-[#171717]">
@@ -57,14 +69,14 @@ const Trackorder = ({ orders }: { orders: Order[] }) => {
                       </div>
                       <div className="text-[12px] font-medium">
                         {" "}
-                        by {item?.data[0]?.seller?.username}
+                        by {item?.data[0]?.seller?.fullname}
                       </div>
                     </div>
                   </div>
                   <div className="flex pt-2 items-center border-t justify-between">
                     <div className="text-[14px] font-medium flex text-[#282828] items-center gap-2">
-                      <div> Items: {item?.data?.length}</div> |{" "}
-                      {item?.totalamount && <div>₹ {item?.totalamount}</div>}
+                      <div> Items: {item?.data?.length}</div>
+                      {item?.totalamount && <div>| ₹ {item?.totalamount}</div>}
                     </div>
                     <Link
                       href={{

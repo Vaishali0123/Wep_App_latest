@@ -1,6 +1,6 @@
 "use client";
 import { useAuthContext } from "@/app/auth/components/auth";
-import { API } from "@/app/utils/helpers";
+import { API, errorHandler } from "@/app/utils/helpers";
 import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useState } from "react";
@@ -43,8 +43,8 @@ const PageContent = () => {
   const productId = searchParams.get("id");
   // const [active, setActive] = React.useState<boolean>(false);
   const [productData, setProductData] = useState<ProductData>({});
-  // const [quantity, setQuantity] = useState(1);
-  const quantity = 1;
+  const [quantity, setQuantity] = useState(1);
+  // const quantity = 1;
   const active = false;
 
   const getProduct = async () => {
@@ -54,7 +54,7 @@ const PageContent = () => {
         setProductData(res?.data?.data);
       }
     } catch (e) {
-      console.log(e);
+      errorHandler(e);
     }
   };
   const total = 5; // Assuming a 5-star rating system
@@ -78,8 +78,7 @@ const PageContent = () => {
       }
       setLoad(false);
     } catch (e) {
-      toast.error("Something went wrong");
-      console.log(e);
+      errorHandler(e);
     }
   };
 
@@ -109,7 +108,7 @@ const PageContent = () => {
       : 0;
   useEffect(() => {
     getProduct();
-  }, []);
+  }, [productId]);
 
   return (
     <div className="h-screen w-full flex pn:max-md:flex-col relative pn:max-md:fixed pn:max-md:overflow-auto bg-white">
@@ -288,11 +287,24 @@ const PageContent = () => {
           <div className="flex gap-2 items-center">
             {discountPercentage === 0 && (
               <div className="flex font-semibold text-[25px]">
-                &#x20b9; {productData?.price}
+                &#x20b9;{" "}
+                {productData?.discountedprice
+                  ? productData?.discountedprice
+                  : productData?.price}
               </div>
             )}
-
-            <div className="text-red-600">{discountPercentage}% Off</div>
+            {productData?.discountedprice && productData?.price ? (
+              <div className="text-red-600">
+                {(
+                  ((productData?.price - productData?.discountedprice) /
+                    productData?.price) *
+                  100
+                ).toFixed(2)}
+                % Off
+              </div>
+            ) : (
+              <div className="text-red-600">0% Off</div>
+            )}
           </div>
           <div className="text-[#464646] text-[14px] font-medium flex items-center gap-1">
             {" "}
@@ -311,7 +323,7 @@ const PageContent = () => {
           >
             <div className="">
               <span className="text-blue-600">FREE</span> delivery on orders
-              dispatched by Grovyo over ₹499.
+              dispatched by Grovyo over ₹999.
               <span className="text-blue-600 hover:underline">Details</span>
             </div>
             {/* <div>
@@ -335,8 +347,10 @@ const PageContent = () => {
             {/* methord  */}
             <div>
               <div className="flex gap-1">
-                <div className="text-gray-600">Payment:</div>{" "}
-                <div className="text-blue-600">COD</div>
+                {/* <div className="text-gray-600">Payment:</div>{" "} */}
+                <div className="text-blue-600 font-semibold">
+                  Cash On Delivery available
+                </div>
               </div>
               {/* <div className="flex gap-1">
                 <div className="text-gray-600">Ships from:</div>{" "}
@@ -354,7 +368,14 @@ const PageContent = () => {
             {/* order  */}
             <div className=" bg-slate-50 p-2 flex justify-between rounded-2xl">
               <label>Quantity:</label>
-              <select id="quantity" name="quantity">
+              <select
+                id="quantity"
+                name="quantity"
+                value={quantity}
+                onChange={(e) => {
+                  setQuantity(Number(e.target.value));
+                }}
+              >
                 <option value="1">1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
@@ -382,7 +403,7 @@ const PageContent = () => {
               disabled={load || !productData?._id || !productData?.price}
               onClick={() => {
                 if (productData?._id && productData?.price) {
-                  buynow(productData?._id, 1, productData?.price);
+                  buynow(productData?._id, quantity, productData?.price);
                 }
               }}
               className="border-2 cursor-pointer border-dashed flex items-center justify-center w-full p-2 rounded-2xl"

@@ -4,16 +4,15 @@ import React, { Suspense } from "react";
 import Trackord from "../../../assets/trackord.png";
 import { useSearchParams } from "next/navigation";
 
-
 type Orderdata = {
   images?: { content: string }[];
-    currentStatus: string;
-    productId: {
-      images: { content: string }[];
-      name: string;
-    };
-    seller: { username: string };
-
+  currentStatus: string;
+  productId: {
+    images: { content: string }[];
+    name: string;
+  };
+  totalprice: number;
+  seller: { username: string };
 };
 
 const PageContent = () => {
@@ -26,8 +25,8 @@ const PageContent = () => {
       {parsedorders?.data?.length > 0 ? (
         <div className="bg-white border border-dotted rounded-2xl space-y-2 w-[60%] flex flex-col items-center p-4 ">
           <div className="w-full flex justify-between items-center">
-            <div>Items in order</div>
-            <div>
+            <div className="">Items in order</div>
+            <div className=" font-bold">
               {parsedorders?.data?.length}{" "}
               {parsedorders?.data?.length > 1 ? "items" : "item"}
             </div>
@@ -39,11 +38,11 @@ const PageContent = () => {
               className="flex py-2 bg-white items-center justify-between w-full gap-2"
             >
               <div className="flex py-2 items-center gap-2">
-                <div className="h-[60px] w-[60px] border flex items-center justify-center rounded-lg">
+                <div className="h-[60px] w-[60px] border flex items-center justify-center rounded-xl">
                   <img
-                    src={item?.images?.[0]?.content}
+                    src={item?.productId?.images?.[0]?.content}
                     alt="pic"
-                    className="object-contain w-[100%] h-[100%]"
+                    className="object-cover w-[100%] h-[100%] rounded-xl"
                   />
                 </div>
                 <div className="text-[#171717]">
@@ -53,16 +52,20 @@ const PageContent = () => {
                   {/* <div className="text-[12px] font-medium"> by Brand or Seller</div> */}
                 </div>
               </div>
-              <div className="text-[#3478ff] px-2 text-[14px]">₹ 500</div>
+              <div className="text-[#3478ff] px-2 text-[14px]">
+                ₹ {item?.totalprice}
+              </div>
             </div>
           ))}
 
-          <div className="w-full ">Bill details</div>
+          <div className="w-full font-semibold ">Bill details</div>
           <div className="w-full flex flex-col items-center bg-[#ffffff] p-2 border border-dashed rounded-2xl">
             <div className="flex w-full justify-between border-b p-2">
-              <div className="text-[#000000] px-2 text-[14px]">Item total</div>
+              <div className="text-[#000000] px-2 text-[14px]">
+                Total Amount
+              </div>
               <div className="text-[#3478ff] px-2 text-[14px]">
-                ₹ {parsedorders?.price}
+                ₹ {parsedorders?.totalamount}
               </div>
             </div>
             <div className="flex w-full justify-between border-b p-2">
@@ -84,14 +87,14 @@ const PageContent = () => {
             </div>
             <div className="flex w-full justify-between border-b p-2">
               <div className="text-[#000000] px-2 text-[14px] font-semibold">
-                To Pay
+                Paid
               </div>
               <div className="text-[#3478ff] px-2 text-[14px]">
                 ₹ {parsedorders?.totalamount}
               </div>
             </div>
           </div>
-          <div className="w-full ">Order details</div>
+          <div className="w-full font-semibold">Order details</div>
           <div className="w-full flex flex-col items-center bg-[#ffffff] p-2 border border-dashed rounded-2xl">
             {/* <div className="flex w-full justify-between border-b p-2">
               <div className="text-[#000000] px-2 text-[14px]">Order ID</div>
@@ -105,7 +108,23 @@ const PageContent = () => {
                 Order placed
               </div>
               <div className="text-[#3478ff] px-2 text-[14px]">
-                placed on wed, 27 Dec’23, 11:22 PM
+                {`Placed on ${new Date(parsedorders?.createdAt)
+                  .getDate()
+                  .toString()
+                  .padStart(2, "0")} ${new Date(
+                  parsedorders?.createdAt
+                ).toLocaleString("en-US", { month: "short" })}’${new Date(
+                  parsedorders?.createdAt
+                )
+                  .getFullYear()
+                  .toString()
+                  .slice(-2)}, ${new Date(
+                  parsedorders?.createdAt
+                ).toLocaleTimeString("en-US", {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })}`}
               </div>
             </div>
             <div className="flex w-full justify-between border-b p-2">
@@ -118,15 +137,16 @@ const PageContent = () => {
                   : "Cash on Delivery"}
               </div>
             </div>
-            <div className="flex w-full justify-between border-b p-2">
-              <div className="text-[#000000] px-2 text-[14px]">Deliver at</div>
+            {/* Address */}
+            {/* <div className="flex w-full justify-between border-b p-2">
+              <div className="text-[#000000] px-2 text-[14px]">Delivery at</div>
               <div className="text-[#3478ff] px-2 text-[14px]">
                 {parsedorders?.address?.houseNo},{" "}
                 {parsedorders?.address?.streetAddress},{" "}
                 {parsedorders?.address?.city}, {parsedorders?.address?.state},{" "}
                 {parsedorders?.address?.pincode}
               </div>
-            </div>
+            </div> */}
           </div>
           {/* <div className="w-full h-[40px]  flex items-center px-2 justify-between ">
             <div className="">PRICE type</div>

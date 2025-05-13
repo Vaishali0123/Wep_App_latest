@@ -1150,6 +1150,7 @@
 // };
 
 // export default Post;
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 import { useAuthContext } from "@/app/auth/components/auth";
 import { setIsJoined } from "@/app/redux/slices/feedData";
@@ -1163,6 +1164,7 @@ import { FaHandsClapping } from "react-icons/fa6";
 import { useDispatch, useSelector } from "react-redux";
 import { io, Socket } from "socket.io-client";
 import { IoPlay } from "react-icons/io5";
+import toast from "react-hot-toast";
 // import useTrackView from "@/app/utils/trackView";
 interface PostMedia {
   _id: string;
@@ -1179,6 +1181,7 @@ interface Post {
   };
   media?: PostMedia[];
   likes: number;
+  userName?: string;
   community?: {
     _id: string;
     communityName: string;
@@ -1188,7 +1191,7 @@ interface Post {
 
 export interface PostDataItem {
   ads?: AdDetails;
-  id?: number;
+  id?: number | string;
   dps?: string;
   dp?: string;
   communityName?: string;
@@ -1203,6 +1206,8 @@ export interface PostDataItem {
   _id?: string;
   type?: string;
   clickURL?: string;
+  userName?: string; // Add this line
+  fullname?: string;
 }
 export interface CommunityData {
   _id: string;
@@ -1289,9 +1294,9 @@ const Post = ({
   const [viewData, setViewData] = useState<string[]>([]);
   // const [impressionData, setImpressionData] = useState<string[]>([]);
   // const viewDataRef = useRef<string[]>([]);
-
+  const [comaction, setComaction] = useState("");
   const [load, setLoad] = useState<boolean>(false);
-
+  // const [likeData, setLikeData] = useState([]);
   const handleLike = (postId: string) => {
     // Toggle the liked state locally
     setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
@@ -1348,52 +1353,75 @@ const Post = ({
       };
     }
   }, [userId]);
-  console.log(postData);
+  // console.log(postData);
   const trackView = (viewData: Array<string>) => {
     if (!socketRef.current || viewData?.length === 0) return;
 
     socketRef.current.emit("trackView", { viewData, userId });
     setViewData([]);
   };
-  // const trackImpressions = (impressionData: Array<String>) => {
-  //   if (!socketRef.current || impressionData?.length === 0) return;
+  // const trackShares = (shareData: Array<string>) => {
+  //   if (!socketRef.current || shareData?.length === 0) return;
 
-  //   socketRef.current.emit("trackImpressions", { impressionData });
-  //   setImpressionData([]);
+  //   socketRef.current.emit("trackView", { shareData });
+  //   // setShareData([]);
   // };
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      trackView(viewData); // use the latest viewData via ref
-    };
+  // const trackLikes = (likeData: Array<string>) => {
+  //   if (!socketRef.current || likeData?.length === 0) return;
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    return () => {
-      trackView(viewData); // flush when component unmounts
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  //   socketRef.current.emit("trackLikes", { likeData });
+  //   // setLikeData([]);
+  // };
+  const trackImpressions = (impressionData: Array<string>) => {
+    if (!socketRef.current || impressionData?.length === 0) return;
+
+    socketRef.current.emit("trackImpressions", { impressionData });
+    // setImpressionData([]);
+  };
+  // useEffect(() => {
+  //   const handleBeforeUnload = () => {
+  //     trackView(viewData); // use the latest viewData via ref
+  //   };
+
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+  //   return () => {
+  //     trackView(viewData); // flush when component unmounts
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //   };
+  // }, []);
 
   // ✅ Handle Intersection and mark post as viewed
   useEffect(() => {
     const observers: IntersectionObserver[] = [];
     const timeouts: NodeJS.Timeout[] = [];
-    // const newImpressions: string[] = [];
-    postData.forEach((d, index) => {
-      // if (d?.type === "ad") {
-      //   newImpressions.push(d?.ads?.postDetails?._id as string);
-      // } else {
-      //   newImpressions.push(d?.posts?._id as string);
-      // }
-      // if (newImpressions.length > 0) {
-      //   setImpressionData((prev) => [...prev, ...newImpressions]);
-      //   trackImpressions(newImpressions);
-      // }
+    const newImpressions: string[] = [];
+    postData.forEach((d: PostDataItem, index) => {
+      if (d?.type === "ad") {
+        newImpressions.push(d?.ads?.postDetails?._id as string);
+      } else {
+        if (switcher === 0) {
+          newImpressions.push(d?.posts?._id as string);
+        } else {
+          if (d?.post !== "No posts available") {
+            if (typeof d.post !== "string" && d.post?._id) {
+              newImpressions.push(d.post._id);
+            }
+          }
+        }
+      }
+      if (newImpressions.length > 0) {
+        // setImpressionData((prev) => [...prev, ...newImpressions]);
+
+        trackImpressions([...newImpressions]);
+      }
       // let postId;
       if (!postRefs.current[index]) return;
       const postId =
         d?.type === "ad"
           ? (d?.ads?.postDetails?._id as string)
-          : (d?.posts?._id as string);
+          : switcher === 0
+          ? (d?.posts?._id as string)
+          : typeof d.post !== "string" && (d?.post?._id as string);
       if (!postId) return;
       const observer = new IntersectionObserver(
         (entries) => {
@@ -1410,6 +1438,7 @@ const Post = ({
                   setViewData((prev) =>
                     prev.includes(postId) ? prev : [...prev, postId]
                   );
+                  console.log(viewData, "viewData");
                   if (viewData?.length > 0) {
                     trackView(viewData);
                   }
@@ -1446,30 +1475,30 @@ const Post = ({
   const startTimer = () => {
     if (!timeoutRef.current) {
       timeoutRef.current = setTimeout(() => {
-        sendDataToAPI();
+        // sendDataToAPI();
         timeoutRef.current = null;
       }, 10000);
     }
   };
 
-  const sendDataToAPI = async () => {
-    if (viewData.length === 0) return;
+  // const sendDataToAPI = async () => {
+  //   if (viewData.length === 0) return;
 
-    try {
-      await axios.post(`${API}/analytics`, {
-        viewData: viewData,
+  //   try {
+  //     await axios.post(`${API}/analytics`, {
+  //       viewData: viewData,
 
-        userId: userId,
-      });
+  //       userId: userId,
+  //     });
 
-      console.log("✅ Data sent:", { views: viewData, userId });
+  //     console.log("✅ Data sent:", { views: viewData, userId });
 
-      setViewData([]);
-      // setClickData([]);
-    } catch (error) {
-      console.error("❌ Error sending analytics data:", error);
-    }
-  };
+  //     setViewData([]);
+  //     // setClickData([]);
+  //   } catch (error) {
+  //     console.error("❌ Error sending analytics data:", error);
+  //   }
+  // };
 
   // Track clicks
   const trackClick = (postId: string) => {
@@ -1480,17 +1509,31 @@ const Post = ({
   };
 
   // Handle session end
-  useEffect(() => {
-    const handleSessionEnd = () => {
-      sendDataToAPI();
-    };
+  // useEffect(() => {
+  //   const handleSessionEnd = () => {
+  //     sendDataToAPI();
+  //   };
 
-    window.addEventListener("beforeunload", handleSessionEnd);
-    return () => {
-      window.removeEventListener("beforeunload", handleSessionEnd);
-    };
-  }, []);
-
+  //   window.addEventListener("beforeunload", handleSessionEnd);
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleSessionEnd);
+  //   };
+  // }, []);
+  const leavecom = async (communityId: string) => {
+    if (!userId || !communityId) {
+      toast.error("User or Community is missing.");
+      return;
+    }
+    try {
+      const res = await axios.post(`${API}/leavecom/${userId}/${communityId}`);
+      if (res?.data?.success) {
+        toast.success("Left the community successfully.");
+        setComaction("");
+      }
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
   return (
     <>
       {/* load more .... */}
@@ -1816,16 +1859,22 @@ active:bg-slate-50 bg-slate-50 `}
           </div>
         ) : (
           <div
-            onClick={() => trackClick(d?.posts?._id as string)}
+            // onClick={() => {
+            //   if (switcher === 0) {
+            //     trackClick(d?.posts?._id as string);
+            //   } else {
+            //     trackClick(d?.post?._id as string);
+            //   }
+            // }}
             ref={(el) => {
               postRefs.current[i] = el;
               if (isLastPost && el) lastPostRef.current = el;
             }}
             key={i}
-            className="w-full p-2 border-b space-y-2"
+            className="w-full p-2 border-b  space-y-2 "
           >
             {/* header  */}
-            <div className="w-full h-full rounded-2xl flex items-center justify-between text-[14px]">
+            <div className="w-full h-full   rounded-2xl flex items-center justify-between text-[14px]">
               <Link
                 href={
                   switcher === 0
@@ -1852,28 +1901,52 @@ active:bg-slate-50 bg-slate-50 `}
                       ? d?.posts?.sender?.fullname
                       : typeof d.post !== "string"
                       ? d?.post?.sender?.fullname
-                      : ""}
+                      : d?.userName}
                   </div>
                 </div>
               </Link>
-              {switcher === 0 &&
-              !comjoined.includes(d?.posts?.community?._id ?? "") ? (
-                d?.subs === "unsubscribed" ? (
-                  <div
-                    onClick={() => {
-                      dispatch(setIsJoined(true));
-                      if (!load) {
-                        if (d?.posts?.community?._id) {
-                          joinedfunc(d.posts.community._id);
-                        }
-                      }
-                    }}
-                    className="p-2 px-4 rounded-2xl bg-slate-50 border "
-                  >
-                    {load ? "..." : "Join"}
-                  </div>
-                ) : null
-              ) : null}
+              {
+                <div className="relative ">
+                  {switcher === 0 ? (
+                    !comjoined.includes(d?.posts?.community?._id ?? "") ? (
+                      d?.subs === "unsubscribed" ? (
+                        <div
+                          onClick={() => {
+                            dispatch(setIsJoined(true));
+                            if (!load) {
+                              if (d?.posts?.community?._id) {
+                                joinedfunc(d.posts.community._id);
+                              }
+                            }
+                          }}
+                          className="p-2 px-4 rounded-2xl bg-slate-50 border "
+                        >
+                          {load ? "..." : "Join"}
+                        </div>
+                      ) : null
+                    ) : null
+                  ) : (
+                    <div
+                      onClick={() => {
+                        setComaction(String(d?.id));
+                      }}
+                    >
+                      <BsThreeDotsVertical
+                        size={16}
+                        className="text-black hover:text-slate-600 active:text-slate-700"
+                      />
+                    </div>
+                  )}
+                  {d?.id === comaction && d?.id != userId && (
+                    <div
+                      onClick={() => leavecom(String(d?.id))}
+                      className="absolute p-2 rounded-xl z-500 top-10  bg-white flex flex-col"
+                    >
+                      <div>Leave Community</div>
+                    </div>
+                  )}
+                </div>
+              }
             </div>
             {/* Image or Video section for post (new for you and community) */}
             {switcher === 0 ? (

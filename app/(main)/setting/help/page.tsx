@@ -36,7 +36,7 @@ const Page = () => {
             </div>
             <div>
               <h2 className="text-lg font-semibold text-gray-800">Phone</h2>
-              <p className="text-sm text-gray-600">+91 7310217959</p>
+              <p className="text-sm text-gray-600">+91 9532837959</p>
             </div>
           </div>
 

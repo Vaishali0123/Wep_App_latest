@@ -31,8 +31,8 @@ const page = () => {
           </div>
           <div className="text-[15px] pp:text-[18px] ">
             Cancellation Process: To cancel an order, please contact our
-            customer support team at grovyoinc@gmail.com. Please provide your
-            order details and reasons for cancellation.
+            customer support team at grovyoventures@gmail.com. Please provide
+            your order details and reasons for cancellation.
           </div>
           <div className="text-[15px] pp:text-[18px] ">
             Order Status: Orders that have already been processed and shipped
@@ -99,8 +99,8 @@ const page = () => {
           <div className="text-[15px] pp:text-[18px] ">
             If you have any questions about our Cancellation and Refund Policy
             or need assistance with an order, please contact our customer
-            support team at grovyoinc@gmail.com. We are here to assist you and
-            provide the best possible experience.
+            support team at grovyoventures@gmail.com. We are here to assist you
+            and provide the best possible experience.
           </div>
         </div>
       </div>

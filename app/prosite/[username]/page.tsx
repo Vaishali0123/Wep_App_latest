@@ -94,7 +94,6 @@ const PageContent = () => {
   const [loading, setLoading] = useState(false);
   const [load, setLoad] = useState(false);
   const [prositeData, setPrositeData] = useState<PrositeData | null>(null);
-  
 
   const { username } = useParams();
 
@@ -150,7 +149,6 @@ const PageContent = () => {
 
       if (res?.data?.success) {
         setPrositeData(res?.data?.userDetails);
-        console.log(res?.data?.userDetails);
       }
     } catch (e: unknown) {
       console.log(e);
@@ -172,6 +170,7 @@ const PageContent = () => {
       getProsite(username as string);
     }
   }, [username]);
+  console.log(prositeData, "prositeData");
 
   return (
     <div className=" bg-white overflow-auto h-screen w-screen ">
@@ -220,7 +219,7 @@ const PageContent = () => {
             </div>
           </div>
           {/* fetched html */}
-          {prositeData?.html !== "" ? (
+          {prositeData?.html != "" ? (
             <div className="flex flex-col w-screen h-screen items-center">
               <object
                 data={`https://d95e0jpum1wnk.cloudfront.net/${prositeData?.username}.html`}
@@ -437,9 +436,9 @@ const PageContent = () => {
             )}
           </div>
           {/* Store  */}
-          <div className="w-full flex flex-col bg-red-300 py-5 items-center space-y-2 justify-center">
+          <div className="w-full flex flex-col bg-white py-5 items-center space-y-2 justify-center">
             <div className="font-semibold text-[18px]">Store</div>
-            <div className="w-[90%] flex bg-slate-600 pn:max-sm:w-[100%] pn:max-sm:grid pn:max-sm:grid-cols-2 flex-wrap gap-2 justify-center ">
+            <div className="w-[90%] flex  pn:max-sm:w-[100%] pn:max-sm:grid pn:max-sm:grid-cols-2 flex-wrap gap-2 justify-center ">
               {prositeData?.isStoreVerified ? (
                 prositeData?.collections.length > 0 ? (
                   prositeData?.collections.map(
@@ -479,7 +478,7 @@ const PageContent = () => {
                                 : prositeData?.username}
                             </div>
 
-                            {d?.discount && d?.discount > 0 && (
+                            {d?.discount && (
                               <div className="text-[14px]  text-end flex gap-2">
                                 <div className="text-[16px] font-semibold">
                                   ₹ {d?.price - d?.discount}

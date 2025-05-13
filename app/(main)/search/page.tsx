@@ -29,6 +29,14 @@ interface Community {
     username: string;
     _id: string;
   };
+  _id?: string;
+  price: number;
+  name: string;
+  brandname: string;
+  discountedprice: number;
+  images?: { content: string }[];
+  content: string;
+  discount?: number;
 }
 interface Prosite {
   dps: string; // URL of the image
@@ -50,6 +58,17 @@ interface Prosite {
   };
 }
 
+interface Product {
+  _id?: string;
+  price: number;
+  name: string;
+  brandname: string;
+  discountedprice: number;
+  images?: { content: string }[];
+  content: string;
+  discount?: number;
+}
+
 // interface Post {
 //   title: string;
 //   description: string;
@@ -69,7 +88,7 @@ const Page = () => {
   const [data, setData] = useState<Community[]>([]);
   const { data: userData } = useAuthContext();
   const id = userData?.id;
-
+  const [productimgs, setProductimgs] = useState([]);
   let debounceTimer: ReturnType<typeof setTimeout>;
   const handleSearch = useCallback(
     (trimmedText: string) => {
@@ -126,21 +145,15 @@ const Page = () => {
                 // showErrorToast();
                 setLoad("done");
               }
-            }
-            // else if (active === 'all') {
-            //   const res = await axios.post(`${API}/searchall/${id}?query=${t}`);
-
-            //   if (res?.data?.success) {
-            //     const pro = res?.data?.mergedpros;
-            //     const com = res?.data?.mergedcoms;
-            //     const post = res?.data?.mergedposts;
-            //     setData({pro, com, post});
-            //     setLoad('done');
-            //   } else {
-            //     showErrorToast();
-            //   }
-            // }
-            else {
+            } else if (active === "all") {
+              const res = await axios.post(`${API}/searchproducts?query=${t}`);
+              if (res?.data?.success) {
+                console.log(res?.data, "ress");
+                setData(res?.data?.products);
+                setProductimgs(res?.data?.imgs);
+                setLoad("done");
+              }
+            } else {
               const res = await axios.post(`${API}/searchpost?query=${t}`);
 
               if (res?.data?.success) {
@@ -166,6 +179,7 @@ const Page = () => {
     },
     [active, API, id]
   );
+  console.log(active, "Acti");
   // const getDummyAnalyticsData = () => {
   //   const today = new Date();
   //   const analytics = [];
@@ -201,10 +215,9 @@ const Page = () => {
   // };
   const updateStoreAnlalyitcs = async (userId: string) => {
     try {
-      const res = await axios.post(`${API}/updateStoreAnalytics`, {
+      await axios.post(`${API}/updateStoreAnalytics`, {
         userId: userId,
       });
-      console.log(res?.data);
     } catch (e) {
       console.log(e);
     }
@@ -250,6 +263,7 @@ const Page = () => {
         >
           Community
         </div>
+        {/* Posts */}
         <div
           onClick={() => (
             setActive("posts"), setText(""), setData([]), setLoad("")
@@ -261,6 +275,18 @@ const Page = () => {
           } active:bg-slate-100 border border-dashed rounded-xl`}
         >
           Post
+        </div>
+        <div
+          onClick={() => (
+            setActive("all"), setText(""), setData([]), setLoad("")
+          )}
+          className={`p-1 px-4 ${
+            active === "all"
+              ? "bg-black text-white hover:bg-[#222]"
+              : "bg-white   hover:bg-slate-50"
+          } active:bg-[#333] border border-dashed rounded-xl`}
+        >
+          Products
         </div>
       </div>
 
@@ -474,6 +500,65 @@ const Page = () => {
                 </div>
               </div>
             </div>
+          ))
+        )}
+      </div>
+      {/* Product data */}
+
+      <div
+        className={`${
+          active === "all" ? "h-[calc(100%-150px)] bg-white " : "hidden"
+        }`}
+      >
+        {load === "load" ? (
+          <RiLoaderLine
+            size={20}
+            className="animate-spin w-full flex self-center"
+          />
+        ) : (
+          data.map((d: Product, i) => (
+            <Link
+              key={i}
+              href={{
+                pathname: "../product",
+                query: {
+                  userId: id,
+                  id: d?._id,
+                },
+              }}
+              className="flex h-[60px] items-center
+               border-b justify-between hover:bg-slate-50 
+               ctive:bg-slate-100 bg-white px-2 gap-2 overflow-hidden"
+            >
+              <div className="flex items-center justify-between gap-2  w-[100%]">
+                {/* DP */}
+                <div className="h-[40px]  w-[40px] border flex items-center justify-center rounded-2xl">
+                  <img
+                    src={productimgs[i]}
+                    alt="dp"
+                    className="w-[100%] h-[100%] object-cover rounded-2xl"
+                  />
+                </div>
+                {/* Product name */}
+                <div className="text-[#171717] w-[70%]  ">
+                  <div className="text-[14px] font-semibold   min-w-0 truncate max-w-[100%] ">
+                    {d?.name}
+                  </div>
+                  <div className="text-[12px] font-medium">
+                    by {d?.brandname}
+                  </div>
+                </div>
+                {/* Price and discounted price */}
+                <div className="px-2 flex flex-col items-center self-end  justify-center">
+                  <div className="text-[12px] text-green-500 font-semibold">
+                    ₹ {d?.discountedprice ? d?.discountedprice : d?.price}
+                  </div>
+                  <div className="text-[#171717] text-[12px] line-through ">
+                    ₹ {d?.price}
+                  </div>
+                </div>
+              </div>
+            </Link>
           ))
         )}
       </div>

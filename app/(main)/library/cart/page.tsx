@@ -17,8 +17,6 @@ const PageContent = () => {
   const raw = searchParams.get("cart");
 
   const parsedCart = JSON.parse(raw as string);
-  console.log(raw, "raw", typeof raw);
-  console.log(parsedCart, "parsedCart", typeof parsedCart);
   const addressId = useSelector(
     (state: RootState) => state.user.userData.address._id
   );
@@ -118,12 +116,12 @@ const PageContent = () => {
                   ₹ {parsedCart?.totalprice}
                 </div>
               </div>
-              <div className="flex w-full justify-between p-2">
+              {/* <div className="flex w-full justify-between p-2">
                 <div className="text-[#000000] px-2 text-[14px]">Quantity</div>
                 <div className="text-black px-2 text-[16px] font-semibold">
                   {parsedCart?.quantity}
                 </div>
-              </div>
+              </div> */}
               <div className="flex w-full justify-between border-b p-2">
                 <div className="text-[#000000] px-2 text-[14px]">
                   Discount on MRP
@@ -156,10 +154,48 @@ const PageContent = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full h-[40px]  flex items-center px-2 justify-between ">
-              <div className="">Payment type</div>
-              <div className="text-[#ffffff] px-2 bg-slate-800 rounded-2xl text-[14px]">
-                COD
+            <div className="w-full border rounded-2xl p-4 bg-white shadow-md">
+              <h3 className="text-base font-semibold text-gray-800 mb-3">
+                Payment Method
+              </h3>
+              <div className="flex gap-3">
+                {/* UPI Option */}
+                <div className="flex items-center gap-2 bg-[#3b82f6] text-white px-4 py-2 rounded-xl text-sm font-medium shadow-sm">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 text-white"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M4 17l6-6-6-6M14 17l6-6-6-6"
+                    />
+                  </svg>
+                  UPI
+                </div>
+
+                {/* Cash on Delivery Option */}
+                <div className="flex items-center gap-2 bg-gray-100 text-gray-800 px-4 py-2 rounded-xl text-sm font-medium shadow-sm">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-4 w-4 text-gray-600"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M17 9V7a4 4 0 00-8 0v2M5 13h14l1 9H4l1-9z"
+                    />
+                  </svg>
+                  Cash on Delivery
+                </div>
               </div>
             </div>
           </div>

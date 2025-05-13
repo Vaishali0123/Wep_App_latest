@@ -125,7 +125,7 @@ const page = () => {
             Please read these Terms and Conditions &quot;Terms&quot; carefully
             before using the Grovyo web application &quot;Web App&quot; and
             mobile application &quot;Mobile App&quot; operated by Grovyo
-            Platforms Pvt. Ltd &quot;us,&quot; &quot;we,&quot; or
+            Ventures Pvt. Ltd &quot;us,&quot; &quot;we,&quot; or
             &quot;our&quot;.
           </div>
           <h1 className="text-2xl font-semibold py-5 ">Acceptance of Terms</h1>
@@ -222,7 +222,7 @@ const page = () => {
           <h1 className="text-2xl font-semibold py-5 ">Contact Us</h1>
           <div className="text-[15px] pp:text-[18px] ">
             If you have any questions about these Terms, please contact us at
-            grovyoinc@gmail.com.
+            grovyoventures@gmail.com.
           </div>
         </div>
       </div>

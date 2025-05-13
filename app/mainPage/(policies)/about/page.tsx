@@ -70,10 +70,10 @@ const Page = () => {
             and discovery. If you have any questions, suggestions, or feedback,
             please don&apos;t hesitate to reach out to us at{" "}
             <a
-              href="mailto:grovyoinc@gmail.com"
+              href="mailto:grovyoventures@gmail.com"
               className="text-blue-500 underline"
             >
-              grovyoinc@gmail.com
+              grovyoventures@gmail.com
             </a>
             . Your input helps us continually improve and enhance the Grovyo
             experience.

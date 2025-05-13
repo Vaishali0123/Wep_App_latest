@@ -15,10 +15,18 @@ import { useAuthContext } from "@/app/auth/components/auth";
 import InputOTPPattern from "@/app/auth/components/InputOTPPattern";
 import { initOTPless, phoneAuth, verifyOTP } from "@/app/utils/otpUtils";
 import toast from "react-hot-toast";
-
+import { MdShoppingCart } from "react-icons/md";
+import { TbLayoutNavbar } from "react-icons/tb";
 import { useDispatch } from "react-redux";
 import { setUserData } from "@/app/redux/slices/userCreationSlice";
+import { FaMotorcycle } from "react-icons/fa";
 
+interface CartProps {
+  data: CartItem[];
+  totalprice: number;
+  discount: number;
+  delivery?: number;
+}
 // type CartItem = {
 //   product: {
 //     images: { content: string }[];
@@ -56,7 +64,7 @@ const Cart = ({
   addressData,
   phone,
 }: {
-  cart: { data: Array<CartItem>; totalprice: number };
+  cart: CartProps;
   addressData: Address[];
   phone: string;
 }) => {
@@ -96,6 +104,7 @@ const Cart = ({
   // const [addresstype, setAddresstype] = useState("");
   const [otp, setOtp] = useState<string>("");
   const [location, setLocation] = useState<LocationType>();
+  // const [load, setLoad] = useState(false);
 
   // Add new address
   const addAddress = async () => {
@@ -118,7 +127,7 @@ const Cart = ({
         }
       }
       address.phone = phone;
-      console.log(address, "Address");
+
       const res = await axios.post(` ${API}/saveAddress/${data?.id}`, address);
       if (res?.data?.success) {
         toast.success("Address saved.");
@@ -235,10 +244,54 @@ const Cart = ({
     } else {
     }
   }, []);
+  // const addressId = useSelector(
+  //   (state: RootState) => state.user.userData.address._id
+  // );
+  // const buynow = async () => {
+  //   try {
+  //     setLoad(true);
+
+  //     if (!data?.id) {
+  //       toast.error("User not found! Please login or refresh the page.");
+  //       setLoad(false);
+  //       return;
+  //     }
+  //     if (!selectedAddress._id) {
+  //       toast.error("Please select or add an address");
+  //       setLoad(false);
+
+  //       return;
+  //     }
+  //     if (cart?.data?.length === 0) {
+  //       toast.error("Cart is empty!");
+  //       setLoad(false);
+
+  //       return;
+  //     }
+
+  //     const res = await axios.post(`${API}/placeorder/${data?.id}`, {
+  //       cartId: cart._id,
+  //       paymentMode: "Cash",
+  //       finalprice: cart.totalprice,
+  //       discount: cart.discount,
+  //       addressId: addressId,
+  //     });
+
+  //     if (res?.data?.success) {
+  //       toast.success("Order placed successfully!");
+  //       router.refresh();
+  //     } else {
+  //       toast.error("Something went wrong! Please try again later.");
+  //     }
+  //   } catch (e) {
+  //     errorHandler(e);
+  //   }
+  //   setLoad(false);
+  // };
 
   return (
     <div className="h-[100%] flex flex-col items-center w-full space-y-2 overflow-y-auto  dark:bg-[#ffffff] bg-white">
-      <div className="py-2 w-[95%] flex flex-col gap-2 ">
+      <div className="py-2 w-[95%] flex flex-col gap-2  ">
         <div className="font-semibold text-[14px]">Shipping Details</div>
 
         {/* Selected or Enter Address */}
@@ -582,54 +635,140 @@ const Cart = ({
       </div>
 
       {cart?.data?.length > 0 ? (
-        cart?.data?.map((item: CartItem, index: number) => (
-          <div key={index} className=" w-full  px-2 border-b ">
-            <div className="h-full min-w-[196px] w-full  rounded-3xl ">
-              <div className="flex py-2 items-center gap-2">
-                <div className="h-[90px] w-[90px] border flex items-center justify-center rounded-lg">
-                  <img
-                    src={item?.product?.images[0]?.content}
-                    className="w-[100%] h-[100%] object-cover"
-                  />
-                </div>
-                <div className="text-[#171717]">
-                  <div className="text-[14px] font-semibold">
-                    {" "}
-                    {item?.product?.name}
+        <div className="h-[75%] flex flex-col justify-between  w-full">
+          {cart?.data?.map((item: CartItem, index: number) => (
+            <div key={index} className=" w-full px-2 border-b ">
+              <div className=" h-full min-w-[196px] w-full  rounded-3xl ">
+                <div className="flex py-2 items-center gap-2">
+                  <div className="h-[90px] w-[90px] border flex items-center justify-center rounded-lg">
+                    <img
+                      src={item?.product?.images[0]?.content}
+                      className="w-[100%] h-[100%] object-cover"
+                    />
                   </div>
-                  <div className="text-[12px] font-medium">
-                    {" "}
-                    by {item?.product?.brandname}
-                  </div>
-                  <div className="gap-2 flex items-center">
+                  <div className="text-[#171717]">
+                    <div className="text-[14px] font-semibold">
+                      {" "}
+                      {item?.product?.name}
+                    </div>
                     <div className="text-[12px] font-medium">
-                      ₹{item?.product?.price - item?.product?.discount}
+                      {" "}
+                      by {item?.product?.brandname}
                     </div>
-                    <div className="text-[10px] text-[#4e4e4e] font-medium">
-                      <s>₹{item?.product?.price}</s>
+                    <div className="gap-2 flex items-center">
+                      <div className="text-[12px] font-medium">
+                        ₹{item?.product?.price - item?.product?.discount}
+                      </div>
+                      <div className="text-[10px] text-[#4e4e4e] font-medium">
+                        <s>₹{item?.product?.price}</s>
+                      </div>
+                      <div className="text-[12px] text-green-500 font-medium">
+                        {(
+                          (item?.product?.discount / item?.product?.price) *
+                          100
+                        ).toFixed(0)}
+                        % off
+                      </div>
                     </div>
-                    <div className="text-[12px] text-green-500 font-medium">
-                      {(
-                        (item?.product?.discount / item?.product?.price) *
-                        100
-                      ).toFixed(0)}
-                      % off
-                    </div>
-                  </div>
-                  <div className="text-[12px] border p-1 m-1  rounded-xl justify-between flex items-center gap-2 font-medium">
-                    <div className="h-[20px] w-[20px] text-[14px] flex items-center justify-center border rounded-lg">
-                      <RiSubtractLine />
-                    </div>
-                    <div> {item?.quantity}</div>
-                    <div className="h-[20px] w-[20px] text-[14px] flex items-center justify-center border rounded-lg">
-                      <IoIosAdd />
+                    <div className="text-[12px] border p-1 m-1  rounded-xl justify-between flex items-center gap-2 font-medium">
+                      <div className="h-[20px] w-[20px] text-[14px] flex items-center justify-center border rounded-lg">
+                        <RiSubtractLine />
+                      </div>
+                      <div> {item?.quantity}</div>
+                      <div className="h-[20px] w-[20px] text-[14px] flex items-center justify-center border rounded-lg">
+                        <IoIosAdd />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+          ))}
+
+          <div
+            className={`w-full p-4 sm:hidden rounded-2xl bg-slate-100  text-black space-y-4`}
+          >
+            <h2 className="text-base font-bold">Bill Details</h2>
+
+            {/* Item total */}
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <TbLayoutNavbar size={16} />
+                <span className="text-sm font-medium">Item Total</span>
+                {cart?.discount > 0 && (
+                  <div className="bg-blue-100 text-blue-600 rounded-md px-2 py-0.5 text-xs font-medium">
+                    Saved ₹{cart?.discount}
+                  </div>
+                )}
+              </div>
+              <div className="flex items-end gap-2">
+                <span className="line-through text-xs font-medium">
+                  ₹{cart?.discount}
+                </span>
+                <span className="text-sm font-medium">₹{cart?.totalprice}</span>
+              </div>
+            </div>
+
+            {/* Delivery charge */}
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <FaMotorcycle size={16} />
+                <span className="text-sm font-medium">Delivery Charge</span>
+              </div>
+              <div className="flex items-end gap-2">
+                {/* <span className="line-through text-xs font-medium">0</span> */}
+
+                <span className="text-sm font-medium">
+                  {cart?.delivery ? "₹ " + cart?.delivery : "Free"}
+                </span>
+              </div>
+            </div>
+
+            {/* Handling charge */}
+            <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <MdShoppingCart size={16} />
+                <span className="text-sm font-medium">Handling Charge</span>
+              </div>
+              <span className="text-sm font-medium">0</span>
+            </div>
+
+            {/* Taxes */}
+            {/* <div className="flex justify-between items-center">
+              <div className="flex items-center gap-2">
+                <FaMoneyBillWave size={14} />
+                <span className="text-sm font-medium">GST</span>
+              </div>
+              <span className="text-sm font-medium">0</span>
+            </div> */}
+
+            {/* Grand Total */}
+            <div className="flex justify-between items-center mt-4">
+              <span className="text-base font-bold">Grand Total</span>
+              <span className="text-base font-bold">{cart?.totalprice}</span>
+            </div>
+
+            {/* Total Savings */}
+            {cart?.discount > 0 && (
+              <div
+                className="w-1/2 mx-auto py-1 text-center rounded-md font-bold text-xs"
+                style={{ backgroundColor: "#cae3ff", color: "#0077ff" }}
+              >
+                You Saved a Total of {cart?.discount}
+              </div>
+            )}
+
+            <button
+              // disabled={load}
+              // onClick={() => {
+              //   buynow();
+              // }}
+              className="text-[#ffffff] w-[60%] self-center  flex items-center justify-center cursor-pointer hover:bg-slate-700 active:bg-slate-800 py-2 mt-4 bg-black rounded-xl text-[14px]"
+            >
+              Place Order
+            </button>
           </div>
-        ))
+        </div>
       ) : (
         <div className="h-[100%] w-full flex items-center justify-center">
           {" "}

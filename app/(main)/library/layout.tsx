@@ -28,6 +28,12 @@ import { useAuthContext } from "@/app/auth/components/auth";
 interface MainLayoutProps {
   children: ReactNode;
 }
+interface CartProps {
+  data: CartItem[];
+  totalprice: number;
+  discount: number;
+  delivery?: number;
+}
 export type CartItem = {
   product: {
     images: { content: string }[];
@@ -38,15 +44,22 @@ export type CartItem = {
     discount: number;
   };
   quantity: number;
+  discount?: number;
+  totalprice?: number;
+  delivery?: number;
 };
 type Order = {
+  _id?: string;
+  timing: string;
+  discount?: number;
   data: {
     currentStatus: string;
     productId: {
       images: { content: string }[];
       name: string;
     };
-    seller: { username: string };
+
+    seller: { username: string; fullname: string };
   }[];
   totalamount: number;
 };
@@ -70,10 +83,12 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
   const MemorizedTrackorder = memo(Trackorder);
   const MemorizedSubscription = memo(Subscription);
   const [addressData, setAddressData] = useState([]);
-  const [cart, setCart] = useState<{
-    data: Array<CartItem>;
-    totalprice: number;
-  }>({ data: [], totalprice: 0 });
+  const [cart, setCart] = useState<CartProps>({
+    data: [],
+    totalprice: 0,
+    discount: 0,
+    delivery: 0,
+  });
   const [orders, setOrders] = useState<Array<Order>>([]);
   const [subscriptions, setSubscriptions] = useState<Array<SubscriptionItem>>(
     []
@@ -97,7 +112,7 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(`${API}/getOrder/${userId}`);
-      console.log(res?.data?.data, "res?.data?.data");
+
       if (res?.data?.success) {
         setOrders(res?.data?.data);
       }

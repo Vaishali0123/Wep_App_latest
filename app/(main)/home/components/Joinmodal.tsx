@@ -4,6 +4,7 @@ import { setComjoined, setIsJoined } from "@/app/redux/slices/feedData";
 import { RootState } from "@/app/redux/store";
 import { API } from "@/app/utils/helpers";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 // import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -21,6 +22,7 @@ interface JoinPopupProps {
 
 const JoinPopup = ({ comdata }: JoinPopupProps) => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const isJoinedPopup = useSelector(
     (state: RootState) => state.feedData.isjoined
   );
@@ -31,7 +33,11 @@ const JoinPopup = ({ comdata }: JoinPopupProps) => {
       const res = await axios.post(
         `${API}/joincom/${data?.id}/${comdata?._id}`
       );
-      console.log(res?.data, "join com");
+      if (res?.data?.success) {
+        router.push(
+          `/home/insideCommunity?comId=${comdata?._id}&userId=${data?.id}&isJoined=subscribed`
+        );
+      }
     } catch (e) {
       console.log(e);
     }

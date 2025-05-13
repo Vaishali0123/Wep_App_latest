@@ -27,7 +27,6 @@ export const useTrackView = (userId: string | null) => {
 
   useEffect(() => {
     if (postIds.length > 0) {
-      console.log("jj");
       // Timer send every 5 min
       timerRef.current = setInterval(() => {
         sendAnalytics();

@@ -213,8 +213,8 @@ const page = () => {
           <div className="text-[15px] pp:text-[18px] ">
             If you have any questions or concerns about our Shipping and
             Delivery Policy or require assistance with an order, please contact
-            our customer support team at grovyoinc@gmail.com. We are here to
-            provide you with a seamless and enjoyable shopping experience.
+            our customer support team at grovyoventures@gmail.com. We are here
+            to provide you with a seamless and enjoyable shopping experience.
           </div>
         </div>
       </div>

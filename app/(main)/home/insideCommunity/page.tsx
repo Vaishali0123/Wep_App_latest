@@ -1,11 +1,11 @@
 "use client";
-import { API } from "@/app/utils/helpers";
+import { API, errorHandler } from "@/app/utils/helpers";
 import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { Suspense, useEffect, useRef, useState } from "react";
 import { BiHide } from "react-icons/bi";
 // import Keyboard from "../components/Keyboard";
-import { BsEmojiSmile, BsReplyAll } from "react-icons/bs";
+import { BsEmojiSmile, BsReplyAll, BsThreeDotsVertical } from "react-icons/bs";
 import { CiLocationArrow1 } from "react-icons/ci";
 import { FaRegShareSquare } from "react-icons/fa";
 import { FiX } from "react-icons/fi";
@@ -88,6 +88,12 @@ const PageContent = () => {
     comment: string;
   }
 
+  interface member {
+    username?: string;
+    profilepic?: string;
+    fullname?: string;
+  }
+
   const [comdata, setComdata] = useState<CommunityData | null>(null);
   const [likedPosts, setLikedPosts] = useState<Record<string, boolean>>({});
   // let debounceTimeout: NodeJS.Timeout | null = null;
@@ -97,7 +103,37 @@ const PageContent = () => {
     _id: "examplePostId",
     comments: ["This is the first comment!", "Great post!"],
   };
-
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [showMembers, setShowMembers] = useState(false);
+  const [members, setMembers] = useState([]);
+  const getMembers = async (communityId: string) => {
+    try {
+      const res = await axios.get(`${API}/getmembers/${communityId}`);
+      if (res?.data?.success) {
+        setMembers(res?.data?.data); // Assuming the response contains the members data
+      }
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
+  const leavecom = async (communityId: string) => {
+    if (!userId || !communityId) {
+      toast.error("User or Community is missing.");
+      return;
+    }
+    try {
+      // const res = await axios.post(`${API}/leavecom/${userId}/${communityId}`);
+      // if (res?.data?.success) {
+      //   toast.success("Left the community successfully.");
+      router.push(
+        `/home/insideCommunity?comId=${comId}&userId=${userId}&isJoined=unsubscribed`
+      );
+      setIsPopupOpen(false);
+      // }
+    } catch (e) {
+      errorHandler(e);
+    }
+  };
   // const handleAddComment = (comment: any) => {
   //   post.comments.push(comment);
   //   // You may want to update the server or state here
@@ -156,7 +192,6 @@ const PageContent = () => {
       return;
     }
     const link = `${window.location.origin}/home/insideCommunity?comId=${comId}&userId=${userId}&isJoined=${isJoined}`;
-
     // const link = `${window.location.origin}/post/${post?._id}`;
     navigator.clipboard.writeText(link).then(
       () => {
@@ -283,12 +318,85 @@ const PageContent = () => {
                 </div>
               </div>
             </div>
-            {/* <div
-              onClick={() => setClick(false)}
-              className="h-[40px] w-[40px] text-[#171717] hover:bg-slate-50 active:bg-slate-100 bg-white border border-dashed rounded-2xl flex items-center justify-center "
-            >
-              <HiMenuAlt3 className="h-5 w-5" />
-            </div> */}
+            <div className="relative w-[10%] flex self-end">
+              <button
+                onClick={() => setIsPopupOpen(!isPopupOpen)}
+                className="h-[40px] w-[40px]  border border-dashed rounded-2xl flex items-center justify-center text-black hover:bg-slate-100 active:bg-slate-50 transition-colors"
+                aria-label="Community actions"
+              >
+                <BsThreeDotsVertical className="h-[20px] w-[20px]" />
+              </button>
+              {isPopupOpen && (
+                <div className="absolute right-16 top-[50px] w-[150px] bg-white border rounded-2xl  z-10">
+                  <ul className="text-black">
+                    <li
+                      onClick={() => {
+                        setShowMembers(!showMembers);
+                        // setIsPopupOpen(false);
+                        getMembers(comId);
+                      }}
+                      className={`px-4 py- ${
+                        showMembers && "bg-gray-200"
+                      } hover:bg-gray-100 cursor-pointer flex items-center gap-2`}
+                    >
+                      <span className="text-[#B7F09C]">👥</span> Members
+                    </li>
+                    {showMembers && (
+                      <div className="absolute top-[50px] right-40 bg-white border rounded-2xl z-10 max-h-[300px] overflow-y-auto">
+                        {/* <div className="flex items-center justify-between px-4 py-2 border-b">
+                          <h3 className="text-lg font-semibold">Members</h3>
+                          <button onClick={() => setShowMembers(false)}>Close</button>
+                        </div> */}
+                        <div>
+                          {members.map((member: member, index) => (
+                            <div
+                              key={index}
+                              className="flex items-center text-black gap-3 px-4 py-2 border-b"
+                            >
+                              {/* DP */}
+                              <div className="h-[40px] w-[40px] rounded-[16px] ">
+                                <img
+                                  src={member?.profilepic}
+                                  alt="dp"
+                                  className="object-cover rounded-[16px] h-full w-full"
+                                />
+                              </div>
+                              <div>
+                                <div className="flex text-black font-semibold items-center gap-1">
+                                  <span>{member?.fullname}</span>
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                  @{member?.username}
+                                </div>
+                                {/* {member?.lastVisit && (
+                                <div className="text-xs text-gray-400">
+                                  Last visit: {member?.lastVisit}
+                                </div>
+                              )} */}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+                      <span className="text-[#E57C37]">🚫</span> Report
+                    </li>
+                    <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2">
+                      <span className="text-[#82DCF7]">🔇</span> Mute
+                    </li>
+                    <li
+                      onClick={() => {
+                        leavecom(comId);
+                      }}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer flex items-center gap-2"
+                    >
+                      <span className="text-red-500">↩</span> Leave
+                    </li>
+                  </ul>
+                </div>
+              )}
+            </div>
           </div>
           {/* subheader  */}
           <div className="h-[50px] w-full bg-white border-b px-2 flex items-center gap-2 justify-center ">

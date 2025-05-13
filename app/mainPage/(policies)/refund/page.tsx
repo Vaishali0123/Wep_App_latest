@@ -7,7 +7,7 @@ const page = () => {
         Refund Policy
       </h1>
       <div className="font-semibold  text-lg mb-5 ">
-        This website operates under Grovyo Platforms Pvt Ltd
+        This website operates under Grovyo Ventures Pvt Ltd
       </div>
       <p className="font-thin text-[13px]">
         This Privacy Policy describes Our policies and procedures on the

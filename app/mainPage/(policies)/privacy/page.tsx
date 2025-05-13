@@ -569,7 +569,7 @@ const page = () => {
               Privacy Policy
             </h1>
             <div className="font-semibold text-lg mb-5 ">
-              This website operates under Grovyo Platforms Pvt Ltd
+              This website operates under Grovyo Ventures Pvt Ltd
             </div>
             <p className="font-thin text-[13px]">
               This Privacy Policy describes Our policies and procedures on the
@@ -610,7 +610,7 @@ const page = () => {
               <li className="font-thin text-sm">
                 <strong className="">Company</strong> (referred to as either
                 &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or
-                &quot;Our&quot; in this Agreement) refers to Grovyo Platforms
+                &quot;Our&quot; in this Agreement) refers to Grovyo Ventures
                 Pvt. Ltd.
               </li>
               <li className="font-thin text-sm">
