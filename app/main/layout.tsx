@@ -87,7 +87,7 @@ export default function MainLayout({
             </Link>
             <div className="w-full sm:py-6 items-center text-[12px] pn:max-sm:flex-row pn:max-sm:px-2  pn:max-sm:justify-between pn:max-sm: flex flex-col sm:gap-2">
               <Link
-                href={"../home"}
+                href={"../../main/home"}
                 onClick={() => {
                   setClicked(true);
                 }}
@@ -96,7 +96,7 @@ export default function MainLayout({
               >
                 <TbHome
                   className={`w-5 h-5 ${
-                    path.startsWith("/home") ? "text-blue-500 " : ""
+                    path.startsWith("/main/home") ? "text-blue-500 " : ""
                   }`}
                 />
                 <div
@@ -108,7 +108,7 @@ export default function MainLayout({
                 </div>
               </Link>
               <Link
-                href={"../chat"}
+                href={"../../main/chat"}
                 onClick={() => setClicked(true)}
                 className="flex h-12 w-12 hover:bg-slate-50 cursor-pointer active:bg-slate-100 flex-col items-center justify-center rounded-2xl border-2 border-white"
               >
@@ -117,7 +117,7 @@ export default function MainLayout({
               </Link>
 
               <Link
-                href={"../library"}
+                href={"../../main/library"}
                 onClick={() => {
                   setClicked(true);
                 }}
@@ -125,12 +125,12 @@ export default function MainLayout({
               >
                 <MdOutlineLibraryAdd
                   className={`w-5 h-5 ${
-                    path.startsWith("/library") ? "text-blue-500 " : ""
+                    path.startsWith("/main/library") ? "text-blue-500 " : ""
                   }`}
                 />
                 <div
                   className={`text-[12px] ${
-                    path.startsWith("/library")
+                    path.startsWith("/main/library")
                       ? "text-blue-500 "
                       : "text-black"
                   }`}
@@ -157,7 +157,7 @@ export default function MainLayout({
                 </div>
               </div>
               <Link
-                href={"../setting"}
+                href={"../../main/setting"}
                 onClick={() => {
                   setClicked(true);
                 }}
@@ -165,12 +165,12 @@ export default function MainLayout({
               >
                 <IoSettingsOutline
                   className={`w-5 h-5 ${
-                    path.startsWith("/setting") ? "text-blue-500 " : ""
+                    path.startsWith("/main/setting") ? "text-blue-500 " : ""
                   }`}
                 />
                 <div
                   className={`text-[12px] ${
-                    path.startsWith("/setting")
+                    path.startsWith("/main/setting")
                       ? "text-blue-500 "
                       : "text-black"
                   }`}

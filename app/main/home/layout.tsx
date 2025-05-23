@@ -48,7 +48,7 @@ export default function HomeLayout({
         <div className="grid grid-cols-1 h-[50px] relative p-2 rounded-xl w-fit">
           <div className="flex rounded-xl items-center h-fit text-[#303030] select-none text-[14px]">
             <Link
-              href={"../home"}
+              href={"./home"}
               onClick={() => {
                 setSwitcher(1);
               }}
@@ -64,7 +64,7 @@ export default function HomeLayout({
               }`}
             ></div>
             <Link
-              href={"../home"}
+              href={"./home"}
               onClick={() => {
                 setSwitcher(2);
               }}

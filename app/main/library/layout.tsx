@@ -112,7 +112,7 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(`${API}/getOrder/${userId}`);
-
+      console.log(res?.data, "orders");
       if (res?.data?.success) {
         setOrders(res?.data?.data);
       }
@@ -150,7 +150,7 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
           <div className="py-[1%] bg-slate-50 items-center flex gap-2 px-2">
             <Link
               href={{
-                pathname: "/library/cart",
+                pathname: "./cart",
                 query: {
                   cart: JSON.stringify(cart),
                   // addressData: JSON.stringify(addressData),
@@ -165,10 +165,10 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
             </Link>
             <Link
               href={{
-                pathname: "/library/trackOrder",
+                pathname: "./trackOrder",
                 query: { orders: JSON.stringify(orders) }, // Pass the cart as a query parameter
               }}
-              // href="/library/trackOrder"
+              // href="/main/library/trackOrder"
               onClick={() => (setOpen(2), fetchOrders())}
               className={`p-1 px-4 border rounded-xl text-[14px] font-medium ${
                 open === 2 ? "bg-[#000]  text-[#ffffff]" : "text-[#000000] "
@@ -177,7 +177,7 @@ const LibrayLayout: FC<MainLayoutProps> = ({ children }) => {
               Track Order
             </Link>
             <Link
-              href="/library/Subscription"
+              href="./Subscription"
               onClick={() => (setOpen(3), fetchSubscriptions())}
               className={`p-1 px-4 border rounded-xl text-[14px] font-medium ${
                 open === 3 ? "bg-[#000]  text-[#ffffff]" : "text-[#000000] "

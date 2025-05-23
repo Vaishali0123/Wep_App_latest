@@ -33,9 +33,9 @@ export default function SettingLayout({
         {/* body  */}
         <div className=" w-full sm:h-[calc(100%-50px)] h-full bg-white overflow-auto sm:p-2 space-y-2">
           <Link
-            href={"../setting"}
+            href={"/main/setting"}
             className={`${
-              path === "/setting"
+              path === "/main/setting"
                 ? " bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
                 : "hover:bg-slate-50 active:bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
             }`}
@@ -49,9 +49,9 @@ export default function SettingLayout({
             <IoChatbubbleOutline className="w-6 h-6" /> <div>chats</div>
           </Link> */}
           <Link
-            href={"../setting/prosite"}
+            href={"/main/setting/prosite"}
             className={`${
-              path === "/setting/prosite"
+              path === "/main/setting/prosite"
                 ? " bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
                 : "hover:bg-slate-50 active:bg-slate-100  rounded-xl flex w-full p-2 items-center gap-2"
             }`}
@@ -65,9 +65,9 @@ export default function SettingLayout({
             <HiOutlineUserGroup className="w-6 h-6" /> <div>Communities</div>
           </Link> */}
           <Link
-            href={"../setting/createad"}
+            href={"/main/setting/createad"}
             className={`${
-              path === "/setting/createad"
+              path === "/main/setting/createad"
                 ? " bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
                 : "hover:bg-slate-50 active:bg-slate-100  rounded-xl flex w-full p-2 items-center gap-2"
             }`}
@@ -76,9 +76,9 @@ export default function SettingLayout({
             <div>Create your ad</div>
           </Link>
           <Link
-            href={"../setting"}
+            href={"/main/setting"}
             className={`${
-              path === "/setting"
+              path === "/main/setting"
                 ? " bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
                 : "hover:bg-slate-50 active:bg-slate-100  rounded-xl flex w-full p-2 items-center gap-2"
             }`}
@@ -86,9 +86,9 @@ export default function SettingLayout({
             <BsCashCoin className="w-6 h-6" /> <div>Earn With Us</div>
           </Link>{" "}
           <Link
-            href={"../setting/help"}
+            href={"/main/setting/help"}
             className={`${
-              path === "/setting/help"
+              path === "/main/setting/help"
                 ? " bg-slate-100 rounded-xl flex w-full p-2 items-center gap-2"
                 : "hover:bg-slate-50 active:bg-slate-100  rounded-xl flex w-full p-2 items-center gap-2"
             }`}

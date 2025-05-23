@@ -140,7 +140,7 @@ export default function HomeLayout({
                         <Link
                           // href={`../chat/username=${item?._id}`}
                           href={{
-                            pathname: `/chat/messages`, // navigates to messages/page.tsx
+                            pathname: `/main/chat/messages`, // navigates to messages/page.tsx
                             query: {
                               id: item?._id,
                               // username: item?.username,
@@ -198,7 +198,7 @@ export default function HomeLayout({
                 //   item?._id
                 // }`}
                 href={{
-                  pathname: "/chat/messages",
+                  pathname: "/main/chat/messages",
                   query: {
                     xyz: encryptData({
                       id: item?._id,

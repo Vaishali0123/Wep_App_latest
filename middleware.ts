@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
 
   // If the user is authenticated and trying to access restricted routes, redirect them
   if (isUser && restrictedRoutes.includes(url.pathname)) {
-    const dashboardUrl = new URL("/home", request.url); // or any other protected page
+    const dashboardUrl = new URL("/main/home", request.url); // or any other protected page
     return NextResponse.redirect(dashboardUrl);
   }
 
@@ -29,18 +29,18 @@ export const config = {
   matcher: [
     "/auth/signup",
     "/auth/login",
-    "/home",
+    "/main/home",
     // "/",
-    "/chat",
-    "/home/:path*",
-    "/library",
-    "/library/:path*",
-    "/library",
-    "/library/:path*",
-    "/setting",
-    "/setting/:path*",
+    "/main/chat",
+    "/main/home/:path*",
+    "/main/library",
+    "/main/library/:path*",
+    "/main/library",
+    "/main/library/:path*",
+    "/main/setting",
+    "/main/setting/:path*",
 
     // "/:setting*",
-    "/product",
+    "/main/product",
   ],
 };

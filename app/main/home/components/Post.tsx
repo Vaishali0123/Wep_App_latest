@@ -732,8 +732,8 @@ active:bg-slate-50 bg-slate-50 `}
               <Link
                 href={
                   switcher === 0
-                    ? `../home/insideCommunity?comId=${d?.posts?.community?._id}&userId=${userId}&isJoined=${d?.subs}`
-                    : `../home/insideCommunity?comId=${d?.id}&userId=${userId}&isJoined=${d?.subs}`
+                    ? `./home/insideCommunity?comId=${d?.posts?.community?._id}&userId=${userId}&isJoined=${d?.subs}`
+                    : `./home/insideCommunity?comId=${d?.id}&userId=${userId}&isJoined=${d?.subs}`
                 }
                 className="w-full flex gap-2 cursor-pointer items-center rounded-2xl"
               >

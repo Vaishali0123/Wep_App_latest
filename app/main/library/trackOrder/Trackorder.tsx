@@ -57,16 +57,24 @@ const Trackorder = ({ orders }: { orders: Order[] }) => {
                     </div>
                   </div>
                   <div className="flex py-2 items-center gap-2">
-                    <div className="h-[60px] w-[60px]  border flex items-center justify-center rounded-xl">
-                      <img
-                        src={item?.data[0]?.productId?.images[0]?.content}
-                        className="w-[100%] h-[100%] rounded-xl object-cover"
-                      />
-                    </div>
-                    <div className="text-[#171717]">
-                      <div className="text-[14px] font-semibold">
-                        {item?.data[0]?.productId?.name}
+                    {item?.data[0]?.productId?.images[0]?.content && (
+                      <div className="h-[60px] w-[60px]  border flex items-center justify-center rounded-xl">
+                        <img
+                          src={item?.data[0]?.productId?.images[0]?.content}
+                          className="w-[100%] h-[100%] rounded-xl object-cover"
+                        />
                       </div>
+                    )}
+                    <div className="text-[#171717]">
+                      {item?.data[0]?.productId?.name ? (
+                        <div className="text-[14px] font-semibold">
+                          {item?.data[0]?.productId?.name}
+                        </div>
+                      ) : (
+                        <div className="text-[14px] font-semibold ">
+                          Product Deleted
+                        </div>
+                      )}
                       <div className="text-[12px] font-medium">
                         {" "}
                         by {item?.data[0]?.seller?.fullname}
