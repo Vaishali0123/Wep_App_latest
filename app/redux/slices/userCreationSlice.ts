@@ -1,4 +1,4 @@
-import { Address } from "@/app/(main)/library/cart/Cart";
+import { Address } from "@/app/main/library/cart/Cart";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserCreationState {

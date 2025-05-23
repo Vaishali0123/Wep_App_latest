@@ -2,6 +2,20 @@ import axios from "axios";
 import toast from "react-hot-toast";
 
 export const API = process.env.NEXT_PUBLIC_API;
+import CryptoJS from "crypto-js";
+
+export const SECRET_KEY = process.env.NEXT_PUBLIC_ENCRYPT_SECRET || "";
+
+export const encryptData = (data: object): string => {
+  const stringified = JSON.stringify(data);
+  return CryptoJS.AES.encrypt(stringified, SECRET_KEY).toString();
+};
+
+export const decryptData = (cipherText: string) => {
+  const bytes = CryptoJS.AES.decrypt(cipherText, SECRET_KEY);
+  const decrypted = bytes.toString(CryptoJS.enc.Utf8);
+  return JSON.parse(decrypted);
+};
 
 export const errorHandler = (error: unknown) => {
   if (axios.isAxiosError(error)) {

@@ -148,7 +148,6 @@ const Page = () => {
             } else if (active === "all") {
               const res = await axios.post(`${API}/searchproducts?query=${t}`);
               if (res?.data?.success) {
-                console.log(res?.data, "ress");
                 setData(res?.data?.products);
                 setProductimgs(res?.data?.imgs);
                 setLoad("done");
@@ -179,7 +178,7 @@ const Page = () => {
     },
     [active, API, id]
   );
-  console.log(active, "Acti");
+
   // const getDummyAnalyticsData = () => {
   //   const today = new Date();
   //   const analytics = [];

@@ -1,8 +1,9 @@
 "use client";
-import Search from "../(main)/search/page";
+import Search from "./search/page";
 import Link from "next/link";
-import {useState } from "react";
+import { useState } from "react";
 import {
+  IoChatbubblesOutline,
   IoSearch,
   IoSettingsOutline,
 } from "react-icons/io5";
@@ -106,14 +107,15 @@ export default function MainLayout({
                   Home
                 </div>
               </Link>
-              {/* <Link
+              <Link
                 href={"../chat"}
                 onClick={() => setClicked(true)}
                 className="flex h-12 w-12 hover:bg-slate-50 cursor-pointer active:bg-slate-100 flex-col items-center justify-center rounded-2xl border-2 border-white"
               >
                 <IoChatbubblesOutline className="w-5 h-5" />
                 <div>Chats</div>
-              </Link> */}
+              </Link>
+
               <Link
                 href={"../library"}
                 onClick={() => {
